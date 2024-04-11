@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+
+<body>
+
+    <p>Laboratorio #2 - Johanseet Ramírez</p>
+
+    <p>¿Qué es Javascript? JavaScript es un poderoso lenguaje de programación construido para el navegador Netscape en
+        1995.
+        Todos los navegadores modernos lo adoptaron desde entonces para añadir funciones a los sitios web y, más
+        recientemente, a aplicaciones web.
+
+        JavaScript y Java son dos lenguajes de programación diferentes.
+        JavaScript se usa principalmente para programación web en el lado del cliente, mientras que Java se usa para
+        aplicaciones de escritorio, móviles y empresariales.
+        Aunque comparten algunas similitudes en la sintaxis, tienen objetivos y aplicaciones distintas.</p>
+
+    <script>
+        //Solucion problema 2
+        var num1 = 3
+        var num2 = 2
+        var suma = num1 + num2;
+        console.log("Suma de " + num1 + " + " + num2 + " = " + suma)
+        var resta = num1 - num2;
+        console.log("Resta de " + num1 + " - " + num2 + " = " + resta)
+        var mult = num1 - num2;
+        console.log("Multiplicación de " + num1 + " x " + num2 + " = " + mult)
+        var div = num1 - num2;
+        console.log("División de " + num1 + " / " + num2 + " = " + div)
+
+        //Solucion problema 3
+        let str1 = 'Problema'
+        let str2 = 'Concatenado'
+        console.log(str1.concat(str2))
+
+        //Solución problema 4
+        const var1 = 1
+        console.log(typeof var1);
+        const var2 = '1'
+        console.log(typeof var2);
+
+        //Solución problema 5
+        let obj = {
+            number: 5,
+            string: "Problema",
+            boolean: true,
+            objEmpty: {}
+        };
+        console.log(obj);
+
+        function calcularSuma() {
+            const number = document.getElementById('number').value;
+            let sum = 0;
+            for (let i = 1; i < number; i++) {
+                if (i % 3 === 0 || i % 5 === 0) {
+                    sum += i;
+                }
+            }
+            document.getElementById('result').textContent = sum;
+        }
+    </script>
+
+    <p>Función en JS que tome un número entero positivo como argumento y devuelva la suma de todos los números menores
+        que sean múltiplos de 3 o 5</p>
+    <form onsubmit="calcularSuma(); return false;">
+        <label for="number">Número:</label>
+        <input type="number" id="number" required>
+        <button type="submit">Calcular</button>
+    </form>
+    <p>Resultado es <span id="result"></span>.
+    </p>
+
+</body>
+
+</html>
