@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+
+<head>
+    <title>Material Design Example</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/material-components-web/4.0.0/material-components-web.min.css">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(2, auto);
+            grid-gap: 20px;
+        }
+
+        section {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #333;
+            font-weight: 500;
+        }
+
+        form {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        label {
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        input {
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            width: 200px;
+            margin-bottom: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #res-palindromo,
+        #res-contar,
+        #res-bisiesto,
+        #res-sumatoria {
+            margin-top: 20px;
+            font-weight: 500;
+            color: #333;
+        }
+    </style>
+</head>
+
+<body>
+    <section>
+        <h1>Problema 1 - Escribir una función que, dada una cadena "t", retorne si un número es un palíndromo de doble
+            base o no.</h1>
+        <form id="palindromo">
+            <label for="palabra-palindromo">Ingrese una palabra:</label>
+            <input type="text" id="palabra-palindromo" name="palabra" required>
+            <button type="submit">Verificar Palíndromo</button>
+        </form>
+        <div id="res-palindromo"></div>
+    </section>
+    <section>
+        <h1>Problema 2 - Escribir una función que, dada una cadena "t", retorne la cantidad de caracteres de la cadena.
+        </h1>
+        <form id="contar-caracteres">
+            <label for="palabra-contar">Ingrese una palabra:</label>
+            <input type="text" id="palabra-contar" name="palabra" required>
+            <button type="submit">Contar caracteres</button>
+        </form>
+        <div id="res-contar"></div>
+    </section>
+    <section>
+        <h1>Problema 3 - Escribir una función que, dado un año "a", retorne si ese año es bisiesto o no.
+        </h1>
+        <form id="bisiesto">
+            <label for="anio">Ingrese el año:</label>
+            <input type="number" id="anio" name="anio" required>
+            <button type="submit">Verificar</button>
+        </form>
+        <div id="res-bisiesto"></div>
+    </section>
+    <section>
+        <h1>Problema 4 - Escribir una función que, dado un número "n" ( 0 < n < 1000000), retorne la sumatoria de todos
+                los número primos debajo de ese número.</h1>
+                <form id="sumatoria">
+                    <label for="numero">Ingrese un número:</label>
+                    <input type="number" id="numero" name="numero" required>
+                    <button type="submit">Calcular</button>
+                </form>
+                <div id="res-sumatoria"></div>
+    </section>
+    <script>
+        (() => {
+            const App = {
+                htmlElements: {
+                    palindromoForm: document.getElementById('palindromo'),
+                    contarCaracteresForm: document.getElementById('contar-caracteres'),
+                    bisiestoForm: document.getElementById('bisiesto'),
+                    sumatoriaForm: document.getElementById('sumatoria')
+                },
+                init() {
+                    // Handlers
+                    App.htmlElements.palindromoForm.addEventListener(
+                        'submit',
+                        App.handlers.palindromoFormHandler
+                    );
+                    App.htmlElements.contarCaracteresForm.addEventListener(
+                        'submit',
+                        App.handlers.contarCaracteresFormHandler
+                    );
+                    App.htmlElements.bisiestoForm.addEventListener(
+                        'submit',
+                        App.handlers.bisiestoFormHandler
+                    );
+                    App.htmlElements.sumatoriaForm.addEventListener(
+                        'submit',
+                        App.handlers.sumatoriaFormHandler
+                    );
+                },
+                handlers: {
+                    palindromoFormHandler(event) {
+                        event.preventDefault();
+                        const palabra = document.getElementById('palabra-palindromo').value;
+                        const respuesta = App.methods.verificarPalindromo(palabra);
+                        document.getElementById('res-palindromo').textContent = `La palabra "${palabra}" ${respuesta ? "es" : "no es"} un palíndromo de doble base.`;
+                    },
+                    contarCaracteresFormHandler(event) {
+                        event.preventDefault();
+                        const palabra = document.getElementById('palabra-contar').value;
+                        const resultado = App.methods.contarCaracteres(palabra);
+                        let respuesta = '';
+                        Object.entries(resultado).forEach(([key, value]) => {
+                            respuesta = respuesta + value + ' ' + key + ', '
+                        });
+                        document.getElementById('res-contar').textContent = `En la palabra "${palabra}" contiene las siguientes letras "${respuesta}"`;
+                    },
+                    bisiestoFormHandler(event) {
+                        event.preventDefault();
+                        const anio = document.getElementById('anio').value;
+                        const respuesta = App.methods.esBisiesto(anio);
+                        document.getElementById('res-bisiesto').textContent = `La año "${anio}" ${respuesta ? "es" : "no es"} bisiesto.`;
+                    },
+                    sumatoriaFormHandler(event) {
+                        event.preventDefault();
+                        const numero = document.getElementById('numero').value;
+                        const respuesta = App.methods.sumatoria(numero);
+                        document.getElementById('res-sumatoria').textContent = `La sumatoria de los números primos del "${numero}" es ${respuesta}. Profe el 1 no es primo`;
+                    },
+                },
+                methods: {
+                    verificarPalindromo(texto) {
+                        const txt1 = texto.toString();
+                        const txt2 = texto.toString(2);
+                        return txt1 === txt1.split("").reverse().join("") && txt2 === txt2.split("").reverse().join("");
+                    },
+                    contarCaracteres(palabra) {
+                        palabra = palabra.toUpperCase();
+                        const arr = {};
+                        for (let i = 0; i < palabra.length; i++) {
+                            if (arr[palabra[i]]) {
+                                arr[palabra[i]]++;
+                            } else {
+                                arr[palabra[i]] = 1;
+                            }
+                        }
+                        return arr;
+                    },
+                    /* Para saber si un año es bisiesto, se puede aplicar la regla de Pitágoras: 
+                    Si el año es divisible entre 4 y no es divisible entre 100, entonces es bisiesto. 
+                    Si el año es divisible entre 400, entonces es bisiesto
+                    */
+                    esBisiesto(anio) {
+                        return ((anio % 4 == 0) && (anio % 100 != 0)) || (anio % 400 == 0);
+                    },
+
+                    sumatoria(numero) {
+                        let suma = 0;
+                        esPrimo = true;
+                        for (let num = 2; num <= numero; num++) {
+
+                            // se puede separar en otra función que valide si es primo pero queria rifarmela :)
+                            if (num < 2) { // el uno no es primo
+                                esPrimo = false;
+                            } else if (num >= 2) {
+                                for (let i = 2; i <= Math.sqrt(num); i++) {
+                                    if (num % i === 0) {
+                                        esPrimo = false;
+                                    }
+                                }
+                            }
+
+                            if (esPrimo) {
+                                console.log(num);
+                                suma += num;
+                            } else {
+                                esPrimo = true;
+                            }
+                        }
+                        return suma;
+                    }
+                }
+            }
+            App.init();
+        })();
+    </script>
+</body>
+
+</html>
