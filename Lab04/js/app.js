@@ -45,7 +45,7 @@
             mostrarTarjetas(numsFibonacci) {
                 numsFibonacci.forEach(num => {
                     const tarjeta = document.createElement('div');
-                    tarjeta.className = 'col s12 m1';
+                    tarjeta.className = 'col s12 m3';
                     tarjeta.innerHTML = `<div class="card teal lighten-1"><div class="card-content black-text center-align "><h5>${num}</h5></div></div>`;
                     App.htmlElements.resultado.appendChild(tarjeta);
                 });
