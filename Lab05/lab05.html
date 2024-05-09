@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Candidatos</title>
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Candidatos</h1>
+        <label for="name">Nombre:</label>
+        <input type="text" id="name">
+        <label for="color">Color:</label>
+        <select id="color"></select>
+        <button id="btnAgregarCandidato">Agregar Candidato</button>
+        <table>
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Color</th>
+                    <th>Puntos</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="listCandidato"></tbody>
+        </table>
+        <div class="chart-container">
+            <div class="chart" id="chart"></div>
+        </div>
+    </div>
+    <script src="js/scripts.js"></script>
+</body>
+</html>
