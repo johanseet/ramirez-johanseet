@@ -7,6 +7,7 @@
             '#ffff00': 'Amarillo'
         },
         candidatos: [],
+        candidatoIdCounter: 0,
         htmlElements: {
             inputNombre: document.getElementById('name'),
             btnAgregarCandidato: document.getElementById('btnAgregarCandidato'),
@@ -19,14 +20,33 @@
             this.methods.colorSelect();
         },
         bindEvents() {
-            // document.querySelector('button').addEventListener('click', this.handlers.agregarCandidato);
             App.htmlElements.btnAgregarCandidato.addEventListener('click', () => {
                 App.handlers.agregarCandidato();
             });
+            if (!App.htmlElements.listaCandidato.hasAttribute('data-eventos-asignados')) {
+                console.log(App.htmlElements.listaCandidato.hasAttribute('data-eventos-asignados'))
+
+                App.htmlElements.listaCandidato.addEventListener('click', (event) => {
+                    const target = event.target;
+                    if (target.classList.contains('btnAgregarPunto')) {
+                        const id = parseInt(target.getAttribute('data-id'));
+                        App.handlers.agregarPunto(id);
+                    } else if (target.classList.contains('btnEliminarCandidato')) {
+                        const id = parseInt(target.getAttribute('data-id'));
+                        App.handlers.eliminarCandidato(id);
+                    }
+                });
+
+                App.htmlElements.listaCandidato.setAttribute('data-eventos-asignados', 'true');
+            }
         },
         handlers: {
             agregarCandidato() {
                 const name = App.htmlElements.inputNombre.value;
+                if (!name) {
+                    alert('Por favor, ingrese el nombre del candidato.');
+                    return;
+                }
                 let color = App.htmlElements.selectColor.value;
                 if (color === 'random') {
                     let availableColors = Object.keys(App.colors).filter(c => !App.candidatos.some(candidato => candidato.color === c));
@@ -43,17 +63,24 @@
                 }
 
                 if (name && color) {
-                    const candidato = { name, color, points: 0 };
+                    const candidato = { id: App.candidatoIdCounter++, name, color, points: 0 };
                     App.candidatos.push(candidato);
+                    console.log(`Se agregó un candidato nuevo ${candidato.name}. : ${JSON.stringify(App.candidatos)}`);
                     App.methods.renderCandidatos();
                 }
             },
-            eliminarCandidato(index) {
-                App.candidatos.splice(index, 1);
-                App.methods.renderCandidatos();
+            agregarPunto(id) {
+                const candidato = App.candidatos.find(candidato => candidato.id === id);
+                if (candidato) {
+                    console.log(`Candidato agregar punto: ${candidato.id}`);
+                    candidato.points++;
+                    console.log(`Candidato puntos: ${candidato.points}`);
+                    App.methods.renderCandidatos();
+                }
             },
-            agregarPunto(index) {
-                App.candidatos[index].points++;
+            eliminarCandidato(id) {
+                console.log(id)
+                App.candidatos = App.candidatos.filter(candidato => candidato.id !== id);
                 App.methods.renderCandidatos();
             }
         },
@@ -67,10 +94,14 @@
                 // Calcular el total de puntos
                 const totalPoints = App.candidatos.reduce((acc, candidato) => acc + candidato.points, 0);
 
+                console.log(`Lista de candidato actual: ${JSON.stringify(App.candidatos)}`);
+                console.log(`Total de votos: ${totalPoints}`);
+
                 // Generar la barra de porcentaje para cada candidato
                 let offset = 0;
                 App.candidatos.forEach((candidato, index) => {
                     const percentage = totalPoints > 0 ? (candidato.points / totalPoints) * 100 : 0;
+                    console.log(`Porcentaje de votos candidato ${candidato.name}: ${percentage}`);
                     const bar = document.createElement('div');
                     bar.classList.add('bar');
                     bar.style.width = percentage + '%';
@@ -85,27 +116,17 @@
 
                 // Renderizar la lista de candidatos
                 App.candidatos.forEach((candidato, index) => {
-                    const row = `<tr>
+                    const id = `candidato-${candidato.id}`;
+                    const row = `<tr id="${id}">
                                     <td>${candidato.name}</td>
                                     <td><span style="color: ${candidato.color};">${App.colors[candidato.color]}</span></td>
                                     <td>${candidato.points}</td>
                                     <td>
-                                    <button id="btnAgregarPunto${index}">Agregar Punto</button>
-                                    <button id="btnEliminar${index}">Eliminar</button>
+                                    <button class="btnAgregarPunto" data-id="${candidato.id}">Agregar Punto</button>
+                                    <button class="btnEliminarCandidato" data-id="${candidato.id}">Eliminar</button>
                                     </td>
                                 </tr>`;
                     App.htmlElements.listaCandidato.innerHTML += row;
-
-                    // Asignar manejadores de eventos a los botones
-                    const btnAgregarPunto = document.getElementById(`btnAgregarPunto${index}`);
-                    btnAgregarPunto.addEventListener('click', () => {
-                        App.handlers.agregarPunto(index);
-                    });
-
-                    const btnEliminar = document.getElementById(`btnEliminar${index}`);
-                    btnEliminar.addEventListener('click', () => {
-                        App.handlers.eliminarCandidato(index);
-                    });
                 });
             },
             colorSelect() {

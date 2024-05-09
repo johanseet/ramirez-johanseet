@@ -60,7 +60,7 @@ th {
 }
 .bar span {
     margin-right: 5px;
-    color: #fff;
+    color: #000;
     font-weight: bold;
 }
 .bar:nth-child(odd) {
