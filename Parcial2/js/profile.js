@@ -37,6 +37,10 @@
                 }
 
                 if (newPassword !== '') {
+                    if (!library.validatePassword(newPassword)) {
+                        alert('La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial.');
+                        return;
+                    }
                     if (newPassword !== confirmPassword) {
                         alert('Las contraseñas no coinciden');
                         return;
