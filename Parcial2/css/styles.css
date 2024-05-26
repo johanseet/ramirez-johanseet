@@ -5,13 +5,16 @@ body {
 }
 
 .container {
-    max-width: 800px;
+    max-width: 400px;
     margin: 50px auto;
     padding: 20px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    text-align: center;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    background-color: #f9f9f9;
+}
+
+h1 {
+    text-align: left;
 }
 
 form {
@@ -21,88 +24,108 @@ form {
 label {
     display: block;
     margin-bottom: 5px;
+    text-align: left;
 }
 
-input {
-    padding: 5px;
+input[type="text"],
+input[type="password"],
+input[type="number"],
+select {
+    width: 100%;
+    padding: 8px;
     margin-bottom: 10px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 5px;
 }
-
 
 button {
     background-color: #007bff;
-    color: #fff;
+    color: white;
     border: none;
     cursor: pointer;
-    padding: 8px 16px;
-    border-radius: 5px;
-    font-size: 14px;
-    transition: background-color 0.3s ease;
+    margin: 5px;
+    padding: 6px;
+    border-radius: 3px;
+    float: right;
 }
+
 button:hover {
     background-color: #0056b3;
 }
 
-
-button:hover {
-    background-color: #0056b3;
+button[type="button"] {
+    background-color: #6c757d;
+    color: white;
 }
 
-#userInfo {
-    margin-bottom: 20px;
+.container button {
+    float: right;
 }
 
-h1 {
-    text-align: center;
-    margin-bottom: 20px;
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
 }
 
-input, select, button {
-    margin-bottom: 10px;
-    padding: 8px;
-    width: 100%;
-    box-sizing: border-box;
+.header button {
+    background-color: #f9f9f9;
+    color: black;
 }
+
+.header button:hover {
+    background-color: #5a6268;
+}
+
 table {
     width: 100%;
     border-collapse: collapse;
     margin-bottom: 20px;
 }
+
 th, td {
+    border: 1px solid #ccc;
     padding: 8px;
-    border: 1px solid #ddd;
     text-align: center;
 }
+
 th {
-    background-color: #f2f2f2;
+    background-color: #007bff;
+    color: white;
 }
+
+tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+
 .chart-container {
     margin-top: 20px;
-    background-color: #f2f2f2;
+    border: 1px solid #ccc;
     border-radius: 5px;
     overflow: hidden;
 }
+
 .chart {
     display: flex;
     height: 30px;
-    overflow: hidden;
-    position: relative;
 }
+
 .bar {
     flex-grow: 1;
-    transition: width 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
+    text-align: center;
+    line-height: 30px;
+    color: white;
 }
-.bar span {
-    margin-right: 5px;
-    color: #000;
-    font-weight: bold;
-}
-.bar:nth-child(odd) {
-    background-color: #007bff;
-}
-.bar:nth-child(even) {
-    background-color: #28a745;
+
+#legend {
+    margin-top: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f0f0f0;
 }

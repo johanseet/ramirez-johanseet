@@ -42,7 +42,11 @@
                     window.location.href = 'login.html';
                 }
             }
-        }
+        },
+        logout() {
+            localStorage.removeItem('user');
+            window.location.href = 'login.html';
+        },
 
     };
 
