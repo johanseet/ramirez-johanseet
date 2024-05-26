@@ -28,11 +28,16 @@
                 event.preventDefault();
                 const username = SignUp.htmlElements.usernameInput.value;
                 const name = SignUp.htmlElements.nameInput.value;
-                const password = await library.hashPassword(SignUp.htmlElements.passwordInput.value);
+                const password = SignUp.htmlElements.passwordInput.value;
+                if (!library.validatePassword(password)) {
+                    alert('La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial.');
+                    return;
+                }
+                const hashedPassword = await library.hashPassword(SignUp.htmlElements.passwordInput.value);
 
                 const newUser = {
                     username: username,
-                    password: password,
+                    password: hashedPassword,
                     name: name
                 }
 
@@ -77,6 +82,10 @@
                     "total": 0.00
                 };
                 localStorage.setItem('usersBudget', JSON.stringify(usersBudget))
+
+                SignUp.htmlElements.usernameInput.value = '';
+                SignUp.htmlElements.nameInput.value = '';
+                SignUp.htmlElements.passwordInput.value = '';
             }
         }
     };

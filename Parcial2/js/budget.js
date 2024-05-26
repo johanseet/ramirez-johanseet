@@ -10,7 +10,7 @@
             selectType: document.getElementById('type'),
             listBudget: document.getElementById('listBudget'),
             chart: document.getElementById('chart'),
-            displayUsername: document.getElementById('displayUsername'),
+            displayName: document.getElementById('displayName'),
             totalDisplay: document.getElementById('totalDisplay'),
             legend: document.getElementById('legend')
         },
@@ -18,7 +18,7 @@
             library.redirectIfNotLoggedIn();
             this.bindEvents();
             this.methods.selectType();
-            this.methods.displayUsername();
+            this.methods.displayName();
             this.methods.renderTable();
             this.methods.renderChart();
         },
@@ -52,8 +52,8 @@
             }
         },
         methods: {
-            displayUsername() {
-                Budget.htmlElements.displayUsername.textContent = `Presupuesto de ${library.loggedInUser()}`;
+            displayName() {
+                Budget.htmlElements.displayName.textContent = `Presupuesto de ${library.getUserByUsername(library.loggedInUser()).name}`;
             },
             selectType() {
                 Budget.type.forEach(type => {

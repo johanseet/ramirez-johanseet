@@ -5,10 +5,21 @@
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
+    <div class="header">
+        <button id="btnLogout">Cerrar sesión</button>
+        <button id="btnGoBudget">Ir al presupuesto</button>
+    </div>
     <div class="container">
-        <h1>Perfil</h1>
-        <div id="userInfo"></div>
-        <button id="btnLogout">Cerrar Sesión</button>
+        <h1 id="displayName"></h1>
+        <form id="userInfo">
+            <label for="name">Nombre:</label>
+            <input type="text" id="name" name="name" required><br>
+            <label for="password">Contraseña:</label>
+            <input type="password" id="password" name="password"><br>
+            <label for="confirmPassword">Confirmar Contraseña:</label>
+            <input type="password" id="confirmPassword" name="confirmPassword"><br>
+            <button type="submit">Actualizar</button>
+        </form>
     </div>
     <script src="js/library.js"></script>
     <script src="js/profile.js"></script>

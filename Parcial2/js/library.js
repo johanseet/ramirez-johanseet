@@ -4,15 +4,17 @@
             const dataUsers = localStorage.getItem('users');
             return dataUsers ? JSON.parse(dataUsers) : [];
         },
+        getUserByUsername(username) {
+            const users = JSON.parse(localStorage.getItem('users'));
+            return users.find(user => user.username === username);
+        },
         getUsersBudget() {
             const dataUserBudget = localStorage.getItem('usersBudget');
             return dataUserBudget ? JSON.parse(dataUserBudget) : {};
         },
         getUserBudget() {
             const user = localStorage.getItem('user');
-            console.log(user)
             const usersBudget = JSON.parse(localStorage.getItem('usersBudget'));
-            console.log(usersBudget[user])
             return usersBudget[user];
         },
         loggedInUser() {
@@ -23,6 +25,10 @@
             const data = encoder.encode(password);
             const hash = await crypto.subtle.digest('SHA-256', data);
             return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
+        },
+        validatePassword(password) {
+            const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+            return regex.test(password);
         },
         isUserLoggedIn() {
             return localStorage.getItem('user') !== null;
