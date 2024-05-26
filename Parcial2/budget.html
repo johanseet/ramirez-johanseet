@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Presupuesto</title>
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1 id="displayUsername"></h1>
+        <label for="amount">Monto:</label>
+        <input type="number" id="amount" name="amount" step="1.00" min="0.00" pattern="/^\d+\.\d{2}$/" placeholder="0.00">
+        <label for="type">Tipo:</label>
+        <select id="type"></select>
+        <button id="btnAddAmount">Agregar</button>
+        <table>
+            <thead>
+                <tr>
+                    <th>Débito</th>
+                    <th>Crédito</th>
+                </tr>
+            </thead>
+            <tbody id="listBudget"></tbody>
+        </table>
+        <div id="totalDisplay">Total: 0.00</div>
+        <div class="chart-container">
+            <div class="chart" id="chart"></div>
+        </div>
+    </div>
+    <script src="js/library.js"></script>
+    <script src="js/budget.js"></script>
+</body>
+</html>

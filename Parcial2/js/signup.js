@@ -1,5 +1,5 @@
-((window) => {
-    const SingUp = {
+(() => {
+    const SignUp = {
         htmlElements: {
             usernameInput: document.getElementById('username'),
             nameInput: document.getElementById('name'),
@@ -9,25 +9,26 @@
         },
 
         init() {
-            SingUp.bindEvents();
+            library.redirectIfLoggedIn();
+            SignUp.bindEvents();
         },
 
         bindEvents() {
-            if (SingUp.htmlElements.signupForm) {
-                SingUp.htmlElements.signupForm.addEventListener('submit', SingUp.handlers.registerUser);
+            if (SignUp.htmlElements.signupForm) {
+                SignUp.htmlElements.signupForm.addEventListener('submit', SignUp.handlers.registerUser);
             }
 
-            if (SingUp.htmlElements.btnSignUp) {
-                SingUp.htmlElements.btnLogin.addEventListener('click', SingUp.handlers.login);
+            if (SignUp.htmlElements.btnLogin) {
+                SignUp.htmlElements.btnLogin.addEventListener('click', SignUp.handlers.login);
             }
         },
 
         handlers: {
             async registerUser(event) {
                 event.preventDefault();
-                const username = SingUp.htmlElements.usernameInput.value;
-                const name = SingUp.htmlElements.nameInput.value;
-                const password = await library.hashPassword(SingUp.htmlElements.passwordInput.value);
+                const username = SignUp.htmlElements.usernameInput.value;
+                const name = SignUp.htmlElements.nameInput.value;
+                const password = await library.hashPassword(SignUp.htmlElements.passwordInput.value);
 
                 const newUser = {
                     username: username,
@@ -35,7 +36,7 @@
                     name: name
                 }
 
-                SingUp.methods.signUp(newUser);
+                SignUp.methods.signUp(newUser);
             },
 
             login() {
@@ -69,9 +70,16 @@
                 let users = library.getUsers();
                 users.push(newUser);
                 localStorage.setItem('users', JSON.stringify(users));
+
+                let usersBudget = library.getUsersBudget();
+                usersBudget[newUser.username] = {
+                    "budget": [],
+                    "total": 0.00
+                };
+                localStorage.setItem('usersBudget', JSON.stringify(usersBudget))
             }
         }
     };
 
-    SingUp.init();
+    SignUp.init();
 })();

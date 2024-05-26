@@ -8,6 +8,7 @@
         },
 
         init() {
+            library.redirectIfLoggedIn();
             Login.bindEvents();
         },
 
@@ -29,7 +30,7 @@
                 const isLoggedIn = await Login.methods.verifyPassword(username, password);
 
                 if (isLoggedIn) {
-                    window.location.href = 'profile.html';
+                    window.location.href = 'budget.html';
                 } else {
                     alert('Usuario o contraseña incorrecta');
                 }
