@@ -10,14 +10,17 @@
             selectType: document.getElementById('type'),
             listBudget: document.getElementById('listBudget'),
             chart: document.getElementById('chart'),
-            displayUsername: document.getElementById('displayUsername')
+            displayUsername: document.getElementById('displayUsername'),
+            totalDisplay: document.getElementById('totalDisplay'),
+            legend: document.getElementById('legend')
         },
         init() {
             library.redirectIfNotLoggedIn();
             this.bindEvents();
             this.methods.selectType();
             this.methods.displayUsername();
-            this.methods.renderBudget();
+            this.methods.renderTable();
+            this.methods.renderChart();
         },
         bindEvents() {
             Budget.htmlElements.btnAddAmount.addEventListener('click', () => {
@@ -44,7 +47,8 @@
                 }
 
                 Budget.methods.addAmount(Budget.htmlElements.selectType.value, parseFloat(amount));
-                Budget.methods.renderBudget();
+                Budget.methods.renderTable();
+                Budget.methods.renderChart();
             }
         },
         methods: {
@@ -61,7 +65,7 @@
             },
             addAmount(selectedType, amount) {
                 let userBudget = library.getUserBudget();
-                
+
                 if (!userBudget) {
                     alert('Error: No se encontró presupuesto para el usuario.');
                     return;
@@ -86,7 +90,7 @@
                 usersBudget[library.loggedInUser()] = userBudget;
                 localStorage.setItem('usersBudget', JSON.stringify(usersBudget));
             },
-            renderBudget() {
+            renderTable() {
                 let userBudget = library.getUserBudget();
                 const listBudget = Budget.htmlElements.listBudget;
                 listBudget.innerHTML = '';
@@ -94,23 +98,69 @@
                 if (userBudget && userBudget.budget.length > 0) {
                     userBudget.budget.forEach(item => {
                         const row = document.createElement('tr');
-                        const typeCell = document.createElement('td');
-                        const amountCell = document.createElement('td');
+                        const debitCell = document.createElement('td');
+                        const creditCell = document.createElement('td');
 
-                        typeCell.textContent = item.type;
-                        amountCell.textContent = item.amount.toFixed(2);
+                        if (item.type === 'credit') {
+                            creditCell.textContent = item.amount.toFixed(2);
+                            debitCell.textContent = '0.00';
+                        } else if (item.type === 'debit') {
+                            debitCell.textContent = `-${item.amount.toFixed(2)}`;
+                            debitCell.style.color = 'red';
+                            creditCell.textContent = '0.00';
+                        }
 
-                        row.appendChild(typeCell);
-                        row.appendChild(amountCell);
+                        row.appendChild(debitCell);
+                        row.appendChild(creditCell);
                         listBudget.appendChild(row);
                     });
                 }
 
-                const totalDisplay = document.getElementById('totalDisplay');
-                if (totalDisplay) {
-                    totalDisplay.textContent = `Total: ${userBudget.total.toFixed(2)}`;
+                if (Budget.htmlElements.totalDisplay) {
+                    Budget.htmlElements.totalDisplay.textContent = `Total: ${userBudget.total.toFixed(2)}`;
                 }
+            },
+            renderChart() {
+                let userBudget = library.getUserBudget();
+
+                let totalCredit = 0;
+                let totalDebit = 0;
+
+                if (userBudget && userBudget.budget.length > 0) {
+                    userBudget.budget.forEach(item => {
+                        if (item.type === 'credit') {
+                            totalCredit += item.amount;
+                        } else if (item.type === 'debit') {
+                            totalDebit += item.amount;
+                        }
+                    });
+                }
+
+                const totalAmount = totalCredit + totalDebit;
+                const creditPercentage = totalAmount > 0 ? (totalCredit / totalAmount) * 100 : 0;
+                const debitPercentage = totalAmount > 0 ? (totalDebit / totalAmount) * 100 : 0;
+
+                const chart = Budget.htmlElements.chart;
+                chart.innerHTML = '';
+
+                const debitBar = document.createElement('div');
+                debitBar.classList.add('bar');
+                debitBar.style.width = debitPercentage + '%';
+                debitBar.style.backgroundColor = 'red';
+                debitBar.textContent = `${debitPercentage.toFixed(2)}%`;
+                chart.appendChild(debitBar);
+
+                const creditBar = document.createElement('div');
+                creditBar.classList.add('bar');
+                creditBar.style.width = creditPercentage + '%';
+                creditBar.style.backgroundColor = 'green';
+                creditBar.textContent = `${creditPercentage.toFixed(2)}%`;
+                chart.appendChild(creditBar);
+
+                Budget.htmlElements.legend.innerHTML = `<p>Total de ingresos: ${totalCredit.toFixed(2)}</p><p>Total de egresos: ${totalDebit.toFixed(2)}</p>`;
+
             }
+
         }
     };
 
