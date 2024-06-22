@@ -14,7 +14,7 @@
             });
 
             App.htmlElements.resultado.addEventListener('click', (event) => {
-                if (event.target.classList.contains('card-content')) {
+                if (event.target.classList.contains('delete-icon')) {
                     App.handlers.eliminarTarjeta(event.target.parentNode);
                 }
             });
@@ -54,7 +54,13 @@
                 fibonacciArray.forEach(num => {
                     const tarjeta = document.createElement('div');
                     tarjeta.className = 'col s12 m3';
-                    tarjeta.innerHTML = `<div class="card teal lighten-1"><div class="card-content black-text center-align "><h5>${num}</h5></div></div>`;
+                    tarjeta.innerHTML = `
+                        <div class="card teal lighten-1">
+                            <span class="delete-icon material-icons">cancel</span>
+                            <div class="card-content black-text center-align">
+                                <h5>${num}</h5>
+                            </div>
+                        </div>`;
                     App.htmlElements.resultado.appendChild(tarjeta);
                 });
             }
