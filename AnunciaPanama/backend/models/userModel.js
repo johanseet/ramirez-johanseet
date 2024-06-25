@@ -16,7 +16,7 @@ export const getUserByEmail = async (email) => {
     .limit(1)
     .single();
   if (error) {
-    if (error.message === 'JSON object requested, multiple (or no) rows returned') {
+    if (error.message === 'Ningun o multiples registros encontrados.') {
       return null;
     }
     throw error;

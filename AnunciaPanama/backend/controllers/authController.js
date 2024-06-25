@@ -7,7 +7,7 @@ export const register = async (req, res) => {
   const { email, password } = req.body;
   try {
     const existingUser = await getUserByEmail(email);
-    if (existingUser) return res.status(400).json({ message: 'Email already in use' });
+    if (existingUser) return res.status(400).json({ message: 'Correo existente' });
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = await createUser({ email, password: hashedPassword });
@@ -23,10 +23,10 @@ export const login = async (req, res) => {
   const { email, password } = req.body;
   try {
     const user = await getUserByEmail(email);
-    if (!user) return res.status(400).json({ message: 'Invalid credentials' });
+    if (!user) return res.status(400).json({ message: 'Credenciales inválidas' });
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) return res.status(400).json({ message: 'Invalid credentials' });
+    if (!isPasswordValid) return res.status(400).json({ message: 'Credenciales inválidas' });
 
     const token = jwt.sign({ id: user.id, email: user.email }, jwtSecret, { expiresIn: jwtExpiration });
     res.status(200).json({ token, user });

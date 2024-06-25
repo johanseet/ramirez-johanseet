@@ -26,7 +26,7 @@ export default function Register() {
       {error && <p className="text-red-500">{error}</p>}
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
-          <label htmlFor="email" className="block">Email</label>
+          <label htmlFor="email" className="block">Correo</label>
           <input
             type="email"
             id="email"
@@ -36,7 +36,7 @@ export default function Register() {
           />
         </div>
         <div className="mb-4">
-          <label htmlFor="password" className="block">Password</label>
+          <label htmlFor="password" className="block">Contraseña</label>
           <input
             type="password"
             id="password"

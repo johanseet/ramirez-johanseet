@@ -9,10 +9,10 @@ const ActiveOffers = () => {
   useEffect(() => {
     const fetchOffers = async () => {
       try {
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/offers`); // Suponiendo que el backend tiene un endpoint para obtener ofertas activas
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/offers`);
         setOffers(response.data);
       } catch (error) {
-        console.error('Error fetching offers:', error);
+        console.error('Error obteniendo ofertas:', error);
       }
     };
     fetchOffers();
