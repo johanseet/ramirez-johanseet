@@ -1,0 +1,30 @@
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background-color: #333;
+    color: #fff;
+  }
+  
+  .navbarLeft {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .navbarRight {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .navbarSearch {
+    flex-grow: 1;
+    margin: 0 1rem;
+  }
+  
+  .navbarLink {
+    margin-right: 1rem;
+  }
+  

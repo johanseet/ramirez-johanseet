@@ -1,16 +1,17 @@
 "use client";
 
 import { FaSearch } from 'react-icons/fa';
+import styles from '../styles/SearchBar.module.css';
 
 const SearchBar = () => {
   return (
-    <div className="flex items-center w-full max-w-md border border-gray-300 rounded-full bg-white px-4">
+    <div className={styles.searchBarContainer}>
       <input
         type="text"
         placeholder="Buscar anuncios, ofertas, promociones..."
-        className="flex-grow p-2 rounded-full outline-none"
+        className={styles.searchInput}
       />
-      <FaSearch className="text-gray-600" />
+      <FaSearch className={styles.searchIcon} />
     </div>
   );
 };
