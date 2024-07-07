@@ -1,25 +1,25 @@
 import supabase from '../config/supabase.js';
 
-const createUser = async (userData) => {
+const createClientData = async (clientData) => {
   const { data, error } = await supabase
-    .from('users')
-    .insert([userData]);
+    .from('client_data')
+    .insert([clientData]);
 
   if (error) throw error;
   return data[0];
 };
 
-const findUserByEmail = async (email) => {
+const findClientDataByUserId = async (user_id) => {
   const { data, error } = await supabase
-    .from('users')
+    .from('client_data')
     .select('*')
-    .eq('email', email);
+    .eq('id', user_id);
 
   if (error) throw error;
   return data.length > 0 ? data[0] : null;
 };
 
 export {
-  createUser,
-  findUserByEmail
+  createClientData,
+  findClientDataByUserId
 };

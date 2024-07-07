@@ -1,4 +1,4 @@
-"use client";  // Esta línea debe estar al principio del archivo
+"use client";
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';

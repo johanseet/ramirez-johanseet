@@ -1,13 +1,20 @@
 import jwt from 'jsonwebtoken';
 import { jwtSecret } from '../config/serverConfig.js';
 
-export const authMiddleware = (req, res, next) => {
-  const token = req.headers.authorization?.split(' ')[1];
-  if (!token) return res.status(401).json({ message: 'No se proporciono un token' });
+const authMiddleware = (req, res, next) => {
+  const token = req.header('Authorization').replace('Bearer ', '');
 
-  jwt.verify(token, jwtSecret, (err, decoded) => {
-    if (err) return res.status(401).json({ message: 'Fallo al autenticar el token' });
+  if (!token) {
+    return res.status(401).json({ error: 'Acceso denegado. No se proporcionó token.' });
+  }
+
+  try {
+    const decoded = jwt.verify(token, jwtSecret);
     req.user = decoded;
     next();
-  });
+  } catch (ex) {
+    res.status(400).json({ error: 'Token inválido.' });
+  }
 };
+
+export default authMiddleware;
