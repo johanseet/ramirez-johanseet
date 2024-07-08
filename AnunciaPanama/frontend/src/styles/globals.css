@@ -2,18 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
+.body {
   @apply bg-gray-100 text-gray-800;
 }
 
-h1, h2, h3 {
+.h1, .h2, .h3 {
   @apply text-primary;
 }
 
-a {
+a, .span {
   @apply text-primary;
 }
 
-a:hover {
+a:hover, .span:hover {
   @apply underline;
 }
