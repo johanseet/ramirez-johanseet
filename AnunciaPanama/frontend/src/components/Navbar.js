@@ -27,7 +27,7 @@ const Navbar = () => {
   }, []);
 
   return (
-    <Disclosure as="nav" className="bg-primary w-full">
+    <Disclosure as="nav" className="fixed top-0 left-0 w-full bg-primary z-10">
       {({ open }) => (
         <>
           <div className="max-w-full mx-auto px-2 sm:px-6 lg:px-8">
