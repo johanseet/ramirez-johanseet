@@ -102,26 +102,40 @@ const loginUser = async (req, res) => {
       userData = await findBusinessDataByUserId(user.id);
     }
 
-    const token = jwt.sign({ id: user.id, email: user.email, role: user.role }, jwtSecret, { expiresIn: jwtExpiration });
+    req.session.user = {
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      role: user.role,
+      userData
+    };
 
-    return res.json({ token, user: { id: user.id, username: user.username, email: user.email }, userData });
+    res.cookie('connect.sid', req.sessionID, { 
+      httpOnly: true, 
+      secure: process.env.NODE_ENV === 'production', 
+      sameSite: 'lax' 
+    });
+  
+    res.json({ message: 'Inicio de sesión exitoso', user: req.session.user });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
 };
 
 const logoutUser = async (req, res) => {
-  res.status(200).json({ message: 'Sesión cerrada exitosamente' });
+  req.session.destroy((err) => {
+    if (err) {
+      return res.status(400).json({ error: 'No se pudo cerrar la sesión' });
+    }
+    res.status(200).json({ message: 'Sesión cerrada exitosamente' });
+  });
 };
 
 const getSession = async (req, res) => {
-  const token = req.header('Authorization').replace('Bearer ', '');
-
-  try {
-    const decoded = jwt.verify(token, jwtSecret);
-    res.json(decoded);
-  } catch (error) {
-    res.status(400).json({ error: 'Token inválido' });
+  if (req.session.user) {
+    res.json(req.session.user);
+  } else {
+    res.status(401).json({ error: 'No hay sesión activa' });
   }
 };
 

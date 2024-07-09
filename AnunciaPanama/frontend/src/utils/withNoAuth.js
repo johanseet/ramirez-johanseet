@@ -2,19 +2,15 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { getUser } from './auth';
 
-const withAuth = (WrappedComponent) => {
+const withNoAuth = (WrappedComponent) => {
   return (props) => {
     const router = useRouter();
 
     useEffect(() => {
       const checkUser = async () => {
-        try {
-          const { user } = await getUser();
-          if (!user) {
-            router.replace('/login');
-          }
-        } catch {
-          router.replace('/login');
+        const user = await getUser();
+        if (user) {
+          router.replace('/'); // Redirige a la página de inicio si ya está autenticado
         }
       };
       checkUser();
@@ -24,4 +20,4 @@ const withAuth = (WrappedComponent) => {
   };
 };
 
-export default withAuth;
+export default withNoAuth;

@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useState } from 'react';
-import axios from 'axios';
 import { useRouter } from 'next/navigation';
+import { login } from '../../utils/auth';
 import SimpleLayout from '../../components/SimpleLayout';
+import withNoAuth from '../../utils/withNoAuth';
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -24,10 +25,9 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     try {
-      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, formData);
-      console.log(response.data);
+      await login(formData.email, formData.password);
       setError(null);
       router.push('/');
     } catch (error) {
@@ -122,4 +122,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default withNoAuth(Login);

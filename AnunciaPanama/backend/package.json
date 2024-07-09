@@ -6,15 +6,16 @@
   "type": "module",
   "scripts": {
     "start": "bun run server.js",
-    "dev": "bun run server.js --watch"
+    "dev": "bun run src/server.js --watch"
   },
   "dependencies": {
     "@supabase/supabase-js": "^1.0.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.1",
     "cors": "^2.8.5",
-    "express": "^4.19.2",
     "dotenv": "^16.0.0",
+    "express": "^4.19.2",
+    "express-session": "^1.18.0",
     "jsonwebtoken": "^8.5.1"
   },
   "engines": {

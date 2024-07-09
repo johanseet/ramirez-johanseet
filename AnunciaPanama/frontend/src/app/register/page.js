@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useState } from 'react';
-import axios from 'axios';
 import { useRouter } from 'next/navigation';
+import axios from 'axios';
 import SimpleLayout from '../../components/SimpleLayout';
+import withNoAuth from '../../utils/withNoAuth';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -57,7 +58,7 @@ const Register = () => {
           <p className="mt-2 text-center text-sm leading-5 text-gray-600">
             O{' '}
             <a href="/login" className="font-medium text-primary hover:text-primary-dark">
-              inicia sesión con tu cuenta existente
+              Inicia sesión si ya tienes cuenta
             </a>
           </p>
         </div>
@@ -86,7 +87,6 @@ const Register = () => {
                   />
                 </div>
               </div>
-
               <div className="mt-6">
                 <label htmlFor="email" className="block text-sm font-medium leading-5 text-gray-700">
                   Correo electrónico
@@ -103,7 +103,6 @@ const Register = () => {
                   />
                 </div>
               </div>
-
               <div className="mt-6">
                 <label htmlFor="password" className="block text-sm font-medium leading-5 text-gray-700">
                   Contraseña
@@ -120,7 +119,6 @@ const Register = () => {
                   />
                 </div>
               </div>
-
               <div className="mt-6">
                 <label htmlFor="confirmPassword" className="block text-sm font-medium leading-5 text-gray-700">
                   Confirmar contraseña
@@ -137,7 +135,6 @@ const Register = () => {
                   />
                 </div>
               </div>
-
               <div className="mt-6">
                 <label htmlFor="full_name" className="block text-sm font-medium leading-5 text-gray-700">
                   Nombre completo
@@ -154,7 +151,6 @@ const Register = () => {
                   />
                 </div>
               </div>
-
               <div className="mt-6">
                 <label htmlFor="date_of_birth" className="block text-sm font-medium leading-5 text-gray-700">
                   Fecha de nacimiento
@@ -171,7 +167,6 @@ const Register = () => {
                   />
                 </div>
               </div>
-
               <div className="mt-6">
                 <label htmlFor="gender" className="block text-sm font-medium leading-5 text-gray-700">
                   Género
@@ -183,16 +178,15 @@ const Register = () => {
                     required
                     value={formData.gender}
                     onChange={handleChange}
-                    className="block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
                   >
-                    <option value="">Seleccione una opción</option>
+                    <option value="">Seleccione un género</option>
                     <option value="male">Masculino</option>
                     <option value="female">Femenino</option>
                     <option value="other">Otro</option>
                   </select>
                 </div>
               </div>
-
               <div className="mt-6">
                 <span className="block w-full rounded-md shadow-sm">
                   <button
@@ -211,4 +205,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default withNoAuth(Register);

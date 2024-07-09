@@ -1,24 +1,20 @@
-import axios from 'axios';
+import api from './api';
 
-export const login = (token) => {
-  localStorage.setItem('token', token);
-  axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+export const login = async (email, password) => {
+  const response = await api.post('/api/auth/login', { email, password });
+  return response.data;
 };
 
-export const logout = () => {
-  localStorage.removeItem('token');
-  delete axios.defaults.headers.common['Authorization'];
+export const logout = async () => {
+  await api.post('/api/auth/logout');
 };
 
-export const getUser = () => {
-  const token = localStorage.getItem('token');
-  if (token) {
-    try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      return payload;
-    } catch (e) {
-      return null;
-    }
+export const getUser = async () => {
+  try {
+    const response = await api.get('/api/auth/session');
+    return response.data;
+  } catch (error) {
+    console.error('Error obteniendo la sesión del usuario:', error);
+    return null;
   }
-  return null;
 };
