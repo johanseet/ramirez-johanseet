@@ -7,7 +7,7 @@ import '../styles/globals.css';
 
 export default function RootLayout({ children }) {
   const pathname = usePathname();
-  const noNavAndFooter = pathname === '/register';
+  const noNavAndFooter = pathname === '/register' || pathname === '/login';
 
   return (
     <html lang="en" className="h-full">

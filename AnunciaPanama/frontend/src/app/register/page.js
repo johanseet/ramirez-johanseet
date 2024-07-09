@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useRouter } from 'next/navigation';
 import SimpleLayout from '../../components/SimpleLayout';
 
 const Register = () => {
@@ -15,6 +16,7 @@ const Register = () => {
     gender: '',
   });
   const [error, setError] = useState(null);
+  const router = useRouter();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
