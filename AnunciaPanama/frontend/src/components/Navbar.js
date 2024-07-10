@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation';
 import { getUser } from '../utils/auth';
 
 const navigation = [
-  { name: 'Comercios', href: '/businesses', current: false },
+  { name: 'Comercios', href: '/business', current: false },
 ];
 
 function classNames(...classes) {

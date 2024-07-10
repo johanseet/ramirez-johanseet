@@ -12,9 +12,9 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className="h-full">
       <head />
-      <body className="flex flex-col min-h-screen h-full">
+      <body className="flex flex-col min-h-screen">
         {!noNavAndFooter && <Navbar />}
-        <main className={`flex-grow ${noNavAndFooter ? '' : 'pt-16'} w-full h-full`}>
+        <main className={`flex-grow ${noNavAndFooter ? '' : 'pt-16'} w-full`}>
           {children}
         </main>
         {!noNavAndFooter && <Footer />}

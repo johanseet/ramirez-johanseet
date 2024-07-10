@@ -8,8 +8,12 @@ html, body {
   padding: 0;
 }
 
-.body {
-  @apply bg-gray-100 text-gray-800;
+body {
+  @apply bg-gray-100 text-gray-800 flex flex-col min-h-screen;
+}
+
+main {
+  @apply flex-grow;
 }
 
 .h1, .h2, .h3 {
