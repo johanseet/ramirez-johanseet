@@ -45,14 +45,14 @@ CREATE TABLE users (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   email VARCHAR(255) UNIQUE NOT NULL,
   password VARCHAR(255) NOT NULL,
-  role VARCHAR(50) NOT NULL, -- 'administrator', 'client', 'business'
+  role VARCHAR(50) NOT NULL,
   username VARCHAR(255) NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT current_timestamp
 );
 
 -- Tabla de datos de administradores
 CREATE TABLE administrator_data (
-  id UUID PRIMARY KEY, -- Same as user_id from users table
+  id UUID PRIMARY KEY,
   full_name VARCHAR(255) NOT NULL,
   phone_number VARCHAR(20),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT current_timestamp,
@@ -61,7 +61,7 @@ CREATE TABLE administrator_data (
 
 -- Tabla de datos del cliente
 CREATE TABLE client_data (
-  id UUID PRIMARY KEY, -- Same as user_id from users table
+  id UUID PRIMARY KEY,
   full_name VARCHAR(255) NOT NULL,
   date_of_birth DATE NOT NULL,
   gender VARCHAR(10) NOT NULL,
@@ -78,7 +78,7 @@ CREATE TABLE business_types (
 
 -- Tabla de datos del comercio
 CREATE TABLE business_data (
-  id UUID PRIMARY KEY, -- Same as user_id from users table
+  id UUID PRIMARY KEY,
   business_type_id UUID REFERENCES business_types(id) ON DELETE SET NULL,
   full_name VARCHAR(255) NOT NULL,
   name VARCHAR(255) NOT NULL,
@@ -88,7 +88,7 @@ CREATE TABLE business_data (
   contact_phone VARCHAR(20),
   website_url VARCHAR(255),
   logo_url VARCHAR(255),
-  paypal_subscription_id VARCHAR(255), -- Campo para almacenar la identificación de la suscripción en PayPal
+  paypal_subscription_id VARCHAR(255),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT current_timestamp,
   FOREIGN KEY (id) REFERENCES users(id) ON DELETE CASCADE
 );
@@ -105,7 +105,7 @@ CREATE TABLE subscriptions (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     business_id UUID REFERENCES business_data(id) ON DELETE CASCADE,
     plan_id UUID REFERENCES plans(id) ON DELETE SET NULL,
-    paypal_subscription_id VARCHAR(255), -- Campo para almacenar la identificación de la suscripción en PayPal
+    paypal_subscription_id VARCHAR(255),
     start_date DATE NOT NULL,
     end_date DATE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT current_timestamp
@@ -174,13 +174,13 @@ CREATE TABLE order_history (
     order_id UUID REFERENCES orders(id) ON DELETE CASCADE,
     status VARCHAR(20) CHECK (status IN ('pending', 'completed', 'cancelled', 'returned', 'refunded')) NOT NULL,
     changed_at TIMESTAMP WITH TIME ZONE DEFAULT current_timestamp,
-    changed_by UUID NOT NULL -- Puede referenciar a un admin o cliente
+    changed_by UUID NOT NULL
 );
 
 -- Tabla de auditoría
 CREATE TABLE audit_logs (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    user_id UUID NOT NULL, -- Puede ser admin, cliente o negocio
+    user_id UUID NOT NULL,
     action TEXT NOT NULL,
     entity VARCHAR(50) NOT NULL,
     entity_id UUID NOT NULL,
@@ -265,7 +265,7 @@ CREATE TABLE conversations (
 CREATE TABLE messages (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     conversation_id UUID REFERENCES conversations(id) ON DELETE CASCADE,
-    sender_id UUID NOT NULL, -- Puede ser client_id o business_id
+    sender_id UUID NOT NULL,
     sender_type VARCHAR(20) CHECK (sender_type IN ('client', 'business')) NOT NULL,
     content TEXT NOT NULL,
     sent_at TIMESTAMP WITH TIME ZONE DEFAULT current_timestamp,
@@ -275,7 +275,7 @@ CREATE TABLE messages (
 -- Tabla de notificaciones
 CREATE TABLE notifications (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    user_id UUID NOT NULL, -- Puede ser admin, cliente o negocio
+    user_id UUID NOT NULL,
     user_type VARCHAR(20) CHECK (user_type IN ('administrator', 'client', 'business')) NOT NULL,
     message TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT current_timestamp,
