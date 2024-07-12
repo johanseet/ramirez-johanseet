@@ -1,8 +1,7 @@
 import express from 'express';
 import sessionConfig from './config/sessionConfig.js';
-import bodyParser from 'body-parser';
 import cors from 'cors';
-import authRoutes from './routes/authRoutes.js';
+import apiRoutes from './routes.js';
 import errorHandler from './middlewares/errorHandler.js';
 import dotenv from 'dotenv';
 
@@ -12,17 +11,17 @@ const app = express();
 
 // Configuración de CORS
 const corsOptions = {
-  origin: 'http://localhost:3000',
+  origin: process.env.CLIENT_URL,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 };
 
 app.use(cors(corsOptions));
-app.use(bodyParser.json());
+app.use(express.json());
 app.use(sessionConfig);
 
-app.use('/api/auth', authRoutes);
+app.use('/api/v1', apiRoutes);
 
 app.use(errorHandler);
 

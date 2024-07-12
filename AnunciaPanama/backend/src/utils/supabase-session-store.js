@@ -1,10 +1,10 @@
 import session from 'express-session';
-import { createClient } from '@supabase/supabase-js';
+import supabase from '../config/supabase.js';
 
 class SupabaseSessionStore extends session.Store {
-  constructor(supabaseUrl, supabaseKey) {
+  constructor() {
     super();
-    this.supabase = createClient(supabaseUrl, supabaseKey);
+    this.supabase = supabase;
   }
 
   async get(sid, callback) {

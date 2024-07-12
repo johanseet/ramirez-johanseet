@@ -4,7 +4,7 @@ import { supabaseUrl, supabaseKey } from './supabase.js';
 
 const sessionConfig = session({
   store: new SupabaseSessionStore(supabaseUrl, supabaseKey),
-  secret: process.env.SESSION_SECRET || 'your_secret_key',
+  secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
   cookie: {
