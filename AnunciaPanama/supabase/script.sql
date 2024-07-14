@@ -30,29 +30,19 @@ DROP TABLE IF EXISTS sessions CASCADE;
 
 -- Crear tablas nuevas
 
--- Tabla de planes de suscripción
-CREATE TABLE plans (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    name VARCHAR(50) NOT NULL,
-    cost DECIMAL(10, 2) NOT NULL,
-    max_ads_per_month INTEGER,
-    features JSONB,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT current_timestamp
-);
-
 -- Tabla de usuarios
 CREATE TABLE users (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   email VARCHAR(255) UNIQUE NOT NULL,
   password VARCHAR(255) NOT NULL,
-  role VARCHAR(50) NOT NULL,
+  role VARCHAR(50) NOT NULL, -- 'administrator', 'client', 'business'
   username VARCHAR(255) NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT current_timestamp
 );
 
 -- Tabla de datos de administradores
 CREATE TABLE administrator_data (
-  id UUID PRIMARY KEY,
+  id UUID PRIMARY KEY, -- Same as user_id from users table
   full_name VARCHAR(255) NOT NULL,
   phone_number VARCHAR(20),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT current_timestamp,
@@ -61,7 +51,7 @@ CREATE TABLE administrator_data (
 
 -- Tabla de datos del cliente
 CREATE TABLE client_data (
-  id UUID PRIMARY KEY,
+  id UUID PRIMARY KEY, -- Same as user_id from users table
   full_name VARCHAR(255) NOT NULL,
   date_of_birth DATE NOT NULL,
   gender VARCHAR(10) NOT NULL,
@@ -78,7 +68,7 @@ CREATE TABLE business_types (
 
 -- Tabla de datos del comercio
 CREATE TABLE business_data (
-  id UUID PRIMARY KEY,
+  id UUID PRIMARY KEY, -- Same as user_id from users table
   business_type_id UUID REFERENCES business_types(id) ON DELETE SET NULL,
   full_name VARCHAR(255) NOT NULL,
   name VARCHAR(255) NOT NULL,
@@ -88,7 +78,7 @@ CREATE TABLE business_data (
   contact_phone VARCHAR(20),
   website_url VARCHAR(255),
   logo_url VARCHAR(255),
-  paypal_subscription_id VARCHAR(255),
+  paypal_subscription_id VARCHAR(255), -- Campo para almacenar la identificación de la suscripción en PayPal
   created_at TIMESTAMP WITH TIME ZONE DEFAULT current_timestamp,
   FOREIGN KEY (id) REFERENCES users(id) ON DELETE CASCADE
 );
@@ -100,12 +90,23 @@ CREATE TABLE sessions (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- Crear tabla de planes de suscripción
+CREATE TABLE plans (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    name VARCHAR(50) NOT NULL,
+    cost DECIMAL(10, 2) NOT NULL,
+    max_ads_per_month INTEGER,
+    description TEXT NOT NULL,
+    features JSONB, -- JSONB para almacenar arrays de características
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT current_timestamp
+);
+
 -- Tabla de suscripciones
 CREATE TABLE subscriptions (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     business_id UUID REFERENCES business_data(id) ON DELETE CASCADE,
     plan_id UUID REFERENCES plans(id) ON DELETE SET NULL,
-    paypal_subscription_id VARCHAR(255),
+    paypal_subscription_id VARCHAR(255), -- Campo para almacenar la identificación de la suscripción en PayPal
     start_date DATE NOT NULL,
     end_date DATE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT current_timestamp
@@ -174,13 +175,13 @@ CREATE TABLE order_history (
     order_id UUID REFERENCES orders(id) ON DELETE CASCADE,
     status VARCHAR(20) CHECK (status IN ('pending', 'completed', 'cancelled', 'returned', 'refunded')) NOT NULL,
     changed_at TIMESTAMP WITH TIME ZONE DEFAULT current_timestamp,
-    changed_by UUID NOT NULL
+    changed_by UUID NOT NULL -- Puede referenciar a un admin o cliente
 );
 
 -- Tabla de auditoría
 CREATE TABLE audit_logs (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    user_id UUID NOT NULL,
+    user_id UUID NOT NULL, -- Puede ser admin, cliente o negocio
     action TEXT NOT NULL,
     entity VARCHAR(50) NOT NULL,
     entity_id UUID NOT NULL,
@@ -265,7 +266,7 @@ CREATE TABLE conversations (
 CREATE TABLE messages (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     conversation_id UUID REFERENCES conversations(id) ON DELETE CASCADE,
-    sender_id UUID NOT NULL,
+    sender_id UUID NOT NULL, -- Puede ser client_id o business_id
     sender_type VARCHAR(20) CHECK (sender_type IN ('client', 'business')) NOT NULL,
     content TEXT NOT NULL,
     sent_at TIMESTAMP WITH TIME ZONE DEFAULT current_timestamp,
@@ -275,7 +276,7 @@ CREATE TABLE messages (
 -- Tabla de notificaciones
 CREATE TABLE notifications (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    user_id UUID NOT NULL,
+    user_id UUID NOT NULL, -- Puede ser admin, cliente o negocio
     user_type VARCHAR(20) CHECK (user_type IN ('administrator', 'client', 'business')) NOT NULL,
     message TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT current_timestamp,
@@ -290,18 +291,11 @@ CREATE TABLE carts (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT current_timestamp
 );
 
--- Tabla de productos en carritos de compras
-CREATE TABLE cart_items (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    cart_id UUID REFERENCES carts(id) ON DELETE CASCADE,
-    product_id UUID REFERENCES products(id) ON DELETE CASCADE,
-    quantity INTEGER NOT NULL,
-    added_at TIMESTAMP WITH TIME ZONE DEFAULT current_timestamp
-);
-
 -- Insertar los planes de suscripción
-INSERT INTO plans (name, cost, max_ads_per_month, features) VALUES 
-('Freemium', 0.00, 3, '{"stats":"basic","support":"email"}'),
-('Básico', 10.00, 10, '{"stats":"detailed","support":"priority email & chat"}'),
-('Profesional', 30.00, NULL, '{"stats":"full","support":"premium","competitor_analysis":true}'),
-('Premium', 50.00, NULL, '{"stats":"full","support":"premium","competitor_analysis":true,"highlighted_ads":true,"consulting":true,"integrations":true}');
+INSERT INTO plans (name, cost, max_ads_per_month, description, features) VALUES 
+('Freemium', 0.00, 3, 'Crear hasta 3 anuncios al mes.', '["Acceso básico a estadísticas de rendimiento", "Segmentación básica por edad y género", "Soporte vía correo electrónico"]'::jsonb),
+('Básico', 10.00, 10, 'Ideal para pequeñas empresas que desean aumentar su visibilidad.', '["Crear hasta 10 anuncios al mes", "Acceso a estadísticas detalladas", "Segmentación avanzada por edad, género, ubicación e intereses", "Soporte prioritario vía correo electrónico y chat"]'::jsonb),
+('Profesional', 30.00, NULL, 'Para empresas que desean maximizar su alcance y optimización.', '["Crear anuncios ilimitados", "Acceso completo a estadísticas con informes descargables", "Segmentación avanzada y retargeting", "Análisis de competencia y recomendaciones para optimización", "Soporte premium vía correo electrónico, chat y teléfono"]'::jsonb),
+('Premium', 50.00, NULL, 'Para grandes empresas con necesidades avanzadas de marketing.', '["Mayor visibilidad en la plataforma", "Anuncios destacados", "Herramientas de A/B testing", "Consultoría mensual con un experto en marketing digital", "Integraciones con herramientas externas de análisis"]'::jsonb);
+
+select * from plans;
