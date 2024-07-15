@@ -1,30 +1,42 @@
 import bcrypt from 'bcryptjs';
-import { createUser, findUserByEmail } from '../infrastructure/models/userModel.js';
-import { createBusinessData, linkSubscriptionToBusiness } from '../infrastructure/models/businessModel.js';
+import { findUserByEmail, findUserByUsername } from '../infrastructure/models/userModel.js';
+import { registerBusinessTransaction } from '../infrastructure/models/transactionModel.js';
+import Client from '../domain/Client.js';
 import Business from '../domain/Business.js';
-import { createPayPalSubscription } from '../../payment/application/paymentUseCases.js';
+import User from '../domain/User.js';
+import logger from '../../config/logger.js';
 
 const registerBusiness = async (businessDetails) => {
-  const { username, email, password, fullName, businessTypeId, name, description, address, contactEmail, contactPhone, websiteUrl, logoUrl, planId } = businessDetails;
+  const {
+    username, email, password, fullName, dateOfBirth, gender,
+    businessName, businessTypeId, businessDescription, address, contactEmail,
+    contactPhone, websiteUrl, socialNetworksUrl
+  } = businessDetails;
 
-  const existingUser = await findUserByEmail(email);
+  try {
+  const existingUser = await findUserByUsername(username);
   if (existingUser) {
+    logger.debug("El usuario ya está registrado");
+    throw new Error('El usuario ya está registrado');
+  }
+
+  const existingEmail = await findUserByEmail(email);
+  if (existingEmail) {
+    logger.debug("El email ya está registrado");
     throw new Error('El email ya está registrado');
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
-  const user = await createUser({ email, password: hashedPassword, role: 'business', username });
 
-  const businessData = new Business(user.id, businessTypeId, fullName, name, description, address, contactEmail, contactPhone, websiteUrl, logoUrl, null, new Date());
+  const user = new User(email, hashedPassword, 'business', username);
+  const client = new Client(fullName, dateOfBirth, gender);
+  const business = new Business(businessTypeId, businessName, businessDescription, address, contactEmail, contactPhone, websiteUrl, socialNetworksUrl);
 
-  await createBusinessData(businessData);
-
-  if (planId !== 'freemium') {
-    const subscription = await createPayPalSubscription(user.id, planId);
-    await linkSubscriptionToBusiness(user.id, subscription.id);
-  }
-
-  return user.id;
+  return await registerBusinessTransaction(user, client, business);
+} catch (error) {
+  logger.error("Error durante el registro del negocio:", error);
+  throw new Error('Error durante el registro del negocio');
+}
 };
 
 export {

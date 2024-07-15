@@ -7,8 +7,13 @@ import Client from '../domain/Client.js';
 const registerClient = async (clientDetails) => {
   const { username, email, password, fullName, dateOfBirth, gender } = clientDetails;
 
-  const existingUser = await findUserByEmail(email);
+  const existingUser = await findUserByUsername(username);
   if (existingUser) {
+    throw new Error('El usuario ya está registrado');
+  }
+
+  const existingEmail = await findUserByEmail(email);
+  if (existingEmail) {
     throw new Error('El email ya está registrado');
   }
 

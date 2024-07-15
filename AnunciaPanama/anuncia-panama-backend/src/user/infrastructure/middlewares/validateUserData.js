@@ -6,7 +6,7 @@ const userSchema = Joi.object({
   password: Joi.string().min(6).required(),
   fullName: Joi.string().required(),
   dateOfBirth: Joi.date().required(),
-  gender: Joi.string().valid('M', 'F', 'O').required()
+  gender: Joi.string().valid('Male', 'Female', 'Other').required()
 });
 
 const validateUserData = (req, res, next) => {

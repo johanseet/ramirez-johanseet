@@ -1,9 +1,9 @@
 import express from 'express';
 import { register } from '../controllers/businessController.js';
-import validateBusinessData from '../middlewares/validateBusinessData.js';
+import validateSchema from '../middlewares/validateSchema.js';
 
 const router = express.Router();
 
-router.post('/register', validateBusinessData, register);
+router.post('/register', validateSchema, register);
 
 export default router;

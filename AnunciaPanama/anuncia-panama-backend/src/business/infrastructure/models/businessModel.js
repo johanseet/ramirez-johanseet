@@ -1,31 +1,56 @@
 import supabase from '../../../config/supabase.js';
+import logger from '../../../config/logger.js';
 
 const createBusinessData = async (businessData) => {
-  const { data, error } = await supabase
-    .from('business_data')
-    .insert([businessData]);
+  try {
+    const { data, error } = await supabase
+      .from('business_data')
+      .insert([businessData]);
 
-  if (error) throw error;
-  return data[0];
+    if (error) {
+      logger.error("Error creando datos del negocio:", error);
+      throw new Error('Error interno del servicio');
+    }
+    return data[0];
+  } catch (error) {
+    logger.error("Error creando datos del negocio:", error);
+    throw new Error('Error interno del servicio');
+  }
 };
 
 const findBusinessDataByUserId = async (user_id) => {
-  const { data, error } = await supabase
-    .from('business_data')
-    .select('*')
-    .eq('id', user_id);
+  try {
+    const { data, error } = await supabase
+      .from('business_data')
+      .select('*')
+      .eq('id', user_id);
 
-  if (error) throw error;
-  return data.length > 0 ? data[0] : null;
+    if (error) {
+      logger.error("Error encontrando datos del negocio por ID de usuario:", error);
+      throw new Error('Error interno del servicio');
+    }
+    return data.length > 0 ? data[0] : null;
+  } catch (error) {
+    logger.error("Error encontrando datos del negocio por ID de usuario:", error);
+    throw new Error('Error interno del servicio');
+  }
 };
 
 const linkSubscriptionToBusiness = async (businessId, subscriptionId) => {
-  const { error } = await supabase
-    .from('business_data')
-    .update({ paypal_subscription_id: subscriptionId })
-    .eq('id', businessId);
+  try {
+    const { error } = await supabase
+      .from('business_data')
+      .update({ paypal_subscription_id: subscriptionId })
+      .eq('id', businessId);
 
-  if (error) throw error;
+    if (error) {
+      logger.error("Error vinculando suscripción al negocio:", error);
+      throw new Error('Error interno del servicio');
+    }
+  } catch (error) {
+    logger.error("Error vinculando suscripción al negocio:", error);
+    throw new Error('Error interno del servicio');
+  }
 };
 
 export {
