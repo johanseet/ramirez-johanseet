@@ -8,7 +8,7 @@ import '@app/globals.css';
 
 export default function RootLayout({ children }) {
   const pathname = usePathname();
-  const noNavAndFooterRoutes = ['/user/register', '/auth/login'];
+  const noNavAndFooterRoutes = ['/user/register', '/auth/login', '/business/onboarding/business-info', '/business/onboarding/user-info', '/business/onboarding/select-plan', '/business/onboarding/payment'];
 
   const shouldHide = noNavAndFooterRoutes.includes(pathname);
 
@@ -17,7 +17,7 @@ export default function RootLayout({ children }) {
       <AuthProvider>
         <html lang="en" className="h-full">
           <head />
-          <body className={`flex flex-col min-h-screen ${shouldHide ? '' : 'pt-16'}`}>
+          <body className={`bg-gray-50 flex flex-col min-h-screen ${shouldHide ? '' : 'pt-16'}`}>
             {!shouldHide && <Navbar />}
             <main className="flex-grow w-full">
               {children}

@@ -1,7 +1,7 @@
 // src/services/api/userService.js
 import axiosInstance from '../axiosConfig';
 
-export const register = async (userData) => {
+export const registerUserService = async (userData) => {
   try {
     const response = await axiosInstance.post('/user/register', userData);
     return response.data;

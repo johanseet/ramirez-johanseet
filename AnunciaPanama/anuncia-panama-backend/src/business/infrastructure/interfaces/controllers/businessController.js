@@ -1,4 +1,4 @@
-import { registerBusiness } from '../../../application/BusinessUseCases.js';
+import { registerBusiness, fetchBusinessTypes } from '../../../application/BusinessUseCases.js';
 import logger from '../../../../config/logger.js';
 
 const register = async (req, res) => {
@@ -26,6 +26,16 @@ const register = async (req, res) => {
   }
 };
 
+const getBusinessTypes= async (req, res) => {
+  try {
+    const plans = await fetchBusinessTypes();
+    res.status(200).json(plans);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 export {
-  register
+  register,
+  getBusinessTypes
 };

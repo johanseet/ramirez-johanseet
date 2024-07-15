@@ -17,7 +17,13 @@ export const RouteProvider = ({ children }) => {
     },
     business:{
       home: '/business',
-      dashboard: '/business/dashboard'
+      dashboard: '/business/dashboard',
+      onboarding:{
+        businessInfo: '/business/onboarding/business-info',
+        userInfo: '/business/onboarding/user-info',
+        selectPlan: '/business/onboarding/select-plan',
+        payment: '/business/onboarding/payment'
+      }
     }
   };
 

@@ -1,6 +1,24 @@
 // src/services/api/businessService.js
 import axiosInstance from '../axiosConfig';
 
+export const registerBusinessService = async (businessData) => {
+  try {
+    const response = await axiosInstance.post('/business/register', businessData);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getBusinessTypes = async () => {
+  try {
+    const response = await axiosInstance.get('/business/types');
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const getBusinesses = async () => {
   try {
     const response = await axiosInstance.get('/businesses');
@@ -13,15 +31,6 @@ export const getBusinesses = async () => {
 export const getBusinessById = async (id) => {
   try {
     const response = await axiosInstance.get(`/businesses/${id}`);
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-};
-
-export const createBusiness = async (businessData) => {
-  try {
-    const response = await axiosInstance.post('/businesses', businessData);
     return response.data;
   } catch (error) {
     throw error;
