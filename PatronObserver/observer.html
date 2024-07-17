@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Ejemplo del Patrón Observer</title>
+</head>
+<body>
+  <h1>Patrón Observer - Suma Aleatoria</h1>
+  <div id="problem"></div>
+  <input type="text" id="userInput" placeholder="Tu respuesta">
+  <div id="result"></div>
+  <button id="updateButton" style="display: none;">Actualizar</button>
+
+  <script>
+    class Suma {
+      constructor() {
+        this.observers = [];
+      }
+
+      //Método que agrega el Observador
+      addObserver(observer) {
+        this.observers.push(observer);
+      }
+
+      //Método que elimina el Observador, el filter excluye el observador que se quiere eliminar
+      removeObserver(observer) {
+        this.observers = this.observers.filter(obs => obs !== observer);
+      }
+
+      //Se encarga de notificar a todos los observadores registrados.
+      notify() {
+        this.observers.forEach(observer => observer());
+      }
+    }
+
+    const problemElement = document.getElementById("problem");
+    const userInput = document.getElementById("userInput");
+    const resultElement = document.getElementById("result");
+    const updateButton = document.getElementById("updateButton");
+    const suma = new Suma();
+
+    function generateProblem() {
+      const num1 = Math.floor(Math.random() * 10) + 1;
+      const num2 = Math.floor(Math.random() * 10) + 1;
+      return `${num1} + ${num2}`;
+    }
+
+    let currentProblem = generateProblem();
+    let correctAnswer = eval(currentProblem);
+
+    function checkAnswer() {
+      const answer = parseInt(userInput.value);
+      const isCorrect = answer === correctAnswer;
+
+      resultElement.textContent = isCorrect ? "Correcto" : "Incorrecto";
+      resultElement.style.color = isCorrect ? "green" : "red";
+      updateButton.style.display = isCorrect ? "block" : "none";
+    }
+
+    function updateProblem() {
+      currentProblem = generateProblem();
+      correctAnswer = eval(currentProblem);
+      problemElement.textContent = currentProblem;
+      userInput.value = "";
+      resultElement.textContent = "";
+      updateButton.style.display = "none";
+    }
+
+    //Agregando un observador al objeto suma que ejecutará la función checkAnswer() 
+    //cada vez que el objeto suma notifique al observador. 
+    suma.addObserver(() => checkAnswer());
+
+    //Event Listener que notifica al observador cada vez que se ingrese un texto
+    userInput.addEventListener("input", () => {
+      suma.notify();
+    });
+
+    updateButton.addEventListener("click", () => {
+      updateProblem();
+    });
+
+    problemElement.textContent = currentProblem;
+  </script>
+</body>
+</html>

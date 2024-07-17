@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Chat entre usuarios</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+
+        .container {
+            display: flex;
+            justify-content: space-between;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .user-section {
+            flex: 1;
+            margin-right: 10px;
+        }
+
+        .user-messages {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            overflow-y: auto;
+            max-height: 400px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+
+        .user-messages li {
+            margin-bottom: 5px;
+        }
+
+        .user1-message {
+            background-color: #dcf8c6;
+            border-radius: 10px;
+            padding: 5px 10px;
+            max-width: 70%;
+            word-wrap: break-word;
+            align-self: flex-start;
+        }
+
+        .user2-message {
+            background-color: #e5e5ea;
+            border-radius: 10px;
+            padding: 5px 10px;
+            max-width: 70%;
+            word-wrap: break-word;
+            align-self: flex-end;
+        }
+
+        input[type="text"] {
+            width: calc(100% - 70px);
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+
+        button {
+            padding: 8px 15px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="user-section" id="user1-section">
+            <h2>Chat de Johanseet</h2>
+            <ul class="user-messages" id="user1-messages"></ul>
+            <input type="text" id="user1-input">
+            <button id="user1-button">Enviar</button>
+        </div>
+        <div class="user-section" id="user2-section">
+            <h2>Chat de Miguel</h2>
+            <ul class="user-messages" id="user2-messages"></ul>
+            <input type="text" id="user2-input">
+            <button id="user2-button">Enviar</button>
+        </div>
+    </div>
+
+    <script>
+        //Clase Usuario no conoce directamente a otros usuarios, sino que interactúa a través del mediador
+        class Usuario {
+            constructor(id, nombre, mediador) {
+                this.id = id;
+                this.nombre = nombre;
+                this.mediador = mediador;
+                this.messagesElement = document.getElementById(`${id}-messages`);
+            }
+
+            //Envia el mensaje al mediador
+            enviarMensaje() {
+                const message = document.getElementById(`${this.id}-input`).value;
+                this.mediador.sendMessage(this, message);
+                document.getElementById(`${this.id}-input`).value = '';
+            }
+
+            //Agrega el mensaje recibido en la lista de la sección del mensaje
+            recibirMensaje(message) {
+                const li = document.createElement('li');
+                li.innerHTML = `<strong>${message.usuario.nombre}:</strong> ${message.contenido}`;
+                li.classList.add(`${message.usuario.id}-message`);
+                this.messagesElement.appendChild(li);
+            }
+
+        }
+
+        //Mediador del chat, sabe cómo comunicar los mensajes entre los usuarios y se encarga de dirigir los mensajes al usuario correcto.
+        const mediador = (() => {
+            const usuarios = {};
+
+            //Envia el mensaje a cada sección de usuario
+            function sendMessage(from, message) {
+                const to = (from.id === 'user1') ? 'user2' : 'user1';
+                usuarios[to].recibirMensaje({ usuario: from, contenido: message });
+                from.recibirMensaje({ usuario: from, contenido: message });
+            }
+
+            function agregarUsuario(usuario) {
+                usuarios[usuario.id] = usuario;
+            }
+
+            return {
+                sendMessage,
+                agregarUsuario
+            };
+        })();
+
+        const user1 = new Usuario('user1', 'Johanseet', mediador);
+        const user2 = new Usuario('user2', 'Miguel', mediador);
+
+        mediador.agregarUsuario(user1);
+        mediador.agregarUsuario(user2);
+
+        const user1Button = document.getElementById('user1-button');
+        const user2Button = document.getElementById('user2-button');
+
+        user1Button.addEventListener('click', () => user1.enviarMensaje());
+        user2Button.addEventListener('click', () => user2.enviarMensaje());
+    </script>
+</body>
+
+</html>
