@@ -1,4 +1,3 @@
-// src/services/api/userService.js
 import axiosInstance from '../axiosConfig';
 
 export const registerUserService = async (userData) => {

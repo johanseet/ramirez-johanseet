@@ -2,6 +2,7 @@
 import supabase from '../../../config/supabaseConfig.js';
 
 const createClientData = async (clientData) => {
+  console.log("****************",clientData)
   const { data, error } = await supabase
     .from('client_data')
     .insert([{
@@ -13,7 +14,7 @@ const createClientData = async (clientData) => {
     }]);
 
   if (error) throw error;
-  return data[0];
+  return;
 };
 
 export {

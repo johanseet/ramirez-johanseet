@@ -9,10 +9,22 @@ const createUser = async (userData) => {
       role: userData.role,
       username: userData.username,
       created_at: userData.createdAt
-    }]);
+    }])
+    .select('id');
 
-  if (error) throw error;
-  return data[0];
+    console.log("Supabase response data:", data);
+    console.log("Supabase response error:", error);
+
+    if (error) {
+      logger.error("Error guardando cliente:", error);
+      throw new Error('Error interno del servicio');
+    }
+
+    if (!data || data.length === 0) {
+      throw new Error('No se pudo insertar el cliente');
+    }
+
+    return data[0].id;
 };
 
 const findUserByUsername = async (username) => {

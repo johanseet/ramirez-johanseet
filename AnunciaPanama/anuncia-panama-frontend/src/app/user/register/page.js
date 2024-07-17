@@ -12,8 +12,8 @@ const Register = () => {
     email: '',
     password: '',
     confirmPassword: '',
-    full_name: '',
-    date_of_birth: '',
+    fullName: '',
+    dateOfBirth: '',
     gender: '',
   });
   const [error, setError] = useState(null);
@@ -130,16 +130,16 @@ const Register = () => {
               </div>
             </div>
             <div className="mt-6">
-              <label htmlFor="full_name" className="block text-sm font-medium leading-5 text-gray-700">
+              <label htmlFor="fullName" className="block text-sm font-medium leading-5 text-gray-700">
                 Nombre completo
               </label>
               <div className="mt-1 rounded-md shadow-sm">
                 <input
-                  id="full_name"
-                  name="full_name"
+                  id="fullName"
+                  name="fullName"
                   type="text"
                   required
-                  value={formData.full_name}
+                  value={formData.fullName}
                   onChange={handleChange}
                   className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
                 />
@@ -151,11 +151,11 @@ const Register = () => {
               </label>
               <div className="mt-1 rounded-md shadow-sm">
                 <input
-                  id="date_of_birth"
-                  name="date_of_birth"
+                  id="dateOfBirth"
+                  name="dateOfBirth"
                   type="date"
                   required
-                  value={formData.date_of_birth}
+                  value={formData.dateOfBirth}
                   onChange={handleChange}
                   className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
                 />

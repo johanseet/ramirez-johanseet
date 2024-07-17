@@ -17,6 +17,7 @@ const register = async (req, res) => {
       sameSite: 'lax'
     });
     
+    console.log("session",req.session)
     res.status(201).json({ message: 'Cliente registrado exitosamente', user: req.session.user });
   } catch (error) {
     res.status(400).json({ error: error.message });

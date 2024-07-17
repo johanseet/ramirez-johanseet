@@ -10,7 +10,7 @@ const withAuth = (WrappedComponent) => {
 
     useEffect(() => {
       if (!loading && !user) {
-        router.push('/auth/login'); // Redirigir a la página de login si no está autenticado
+        router.push('/auth/login');
       }
     }, [loading, user, router]);
 
