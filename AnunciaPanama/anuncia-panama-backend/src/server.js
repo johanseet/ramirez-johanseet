@@ -1,8 +1,10 @@
+
 import express from 'express';
 import sessionConfig from './config/sessionConfig.js';
 import cors from 'cors';
 import apiRoutes from './routes.js';
 import errorHandler from './middlewares/errorHandler.js';
+import logMiddleware from './middlewares/logMiddleware.js';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -21,6 +23,7 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(sessionConfig);
 
+app.use(logMiddleware);
 app.use('/api/v1', apiRoutes);
 
 app.use(errorHandler);

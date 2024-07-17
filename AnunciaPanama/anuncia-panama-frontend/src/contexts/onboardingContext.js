@@ -28,8 +28,11 @@ export const OnboardingProvider = ({ children }) => {
     youtubeUrl: ''
   });
 
+  const [selectedPlan, setSelectedPlan] = useState(null);
+  const [businessId, setBusinessId] = useState(null);
+
   return (
-    <OnboardingContext.Provider value={{ userInfo, setUserInfo, businessInfo, setBusinessInfo }}>
+    <OnboardingContext.Provider value={{ userInfo, setUserInfo, businessInfo, setBusinessInfo, selectedPlan, setSelectedPlan, businessId, setBusinessId }}>
       {children}
     </OnboardingContext.Provider>
   );

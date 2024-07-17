@@ -1,6 +1,6 @@
-import supabase from '../../../config/supabase.js';
+import supabase from '../../../config/supabaseConfig.js';
 
-const fetchPlans = async () => {
+const fetchPlansFromDB = async () => {
   const { data, error } = await supabase
     .from('plans')
     .select('*');
@@ -8,6 +8,18 @@ const fetchPlans = async () => {
   return data;
 };
 
+const getPlanByPaypalIdFromDB = async (paypalPlanId) => {
+  console.log("*********************", paypalPlanId)
+  const { data, error } = await supabase
+    .from('plans')
+    .select('*')
+    .eq('paypal_plan_id', paypalPlanId)
+    .single();
+  if (error) throw new Error(error.message);
+  return data;
+};
+
 export {
-  fetchPlans
+  fetchPlansFromDB,
+  getPlanByPaypalIdFromDB
 };

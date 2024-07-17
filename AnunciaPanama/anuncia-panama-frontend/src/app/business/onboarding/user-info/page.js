@@ -6,7 +6,7 @@ import { useState } from 'react';
 
 const UserInfo = () => {
   const router = useRouter();
-  const { userInfo, setUserInfo, businessInfo } = useOnboarding();
+  const { userInfo, setUserInfo, businessInfo, setBusinessId } = useOnboarding();
   const { businessRegister, loading, error } = useBusinessRegister();
   const [formError, setFormError] = useState(null);
 
@@ -20,9 +20,10 @@ const UserInfo = () => {
     try {
       const response = await businessRegister(userInfo, businessInfo);
       console.log('Business registered successfully:', response);
+      setBusinessId(response.businessId);
       router.push('/business/onboarding/select-plan');
     } catch (err) {
-      setFormError('Failed to register business. Please try again.');
+      setFormError('Fallo al registrar el comercio. Intente de nuevo.');
       console.error('Registration error:', err);
     }
   };

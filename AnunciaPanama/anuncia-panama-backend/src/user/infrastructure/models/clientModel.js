@@ -1,5 +1,5 @@
 // src/user/infrastructure/models/clientModel.js
-import supabase from '../../../config/supabase.js';
+import supabase from '../../../config/supabaseConfig.js';
 
 const createClientData = async (clientData) => {
   const { data, error } = await supabase

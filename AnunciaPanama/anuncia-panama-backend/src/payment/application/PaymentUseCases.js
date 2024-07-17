@@ -1,20 +1,24 @@
-import { createPayPalSubscription as createPayPalSubscriptionService } from '../infrastructure/services/paypalService.js';
-import Payment from '../domain/Payment.js';
-import supabase from '../../config/supabase.js';
+import { createProduct, createPlan, createSubscription } from '../infrastructure/services/paypalService.js';
+import { saveSubscription } from '../infrastructure/models/subscriptionModel.js';
+import logger from '../../config/logger.js';
 
-const createPayPalSubscription = async (businessId, planId) => {
-  const subscriptionData = await createPayPalSubscriptionService(planId, businessId);
+const createProductAndPlan = async (name, description, planName, price) => {
+  const productId = await createProduct(name, description);
+  const planId = await createPlan(productId, planName, price);
+  return planId;
+};
 
-  const payment = new Payment(null, businessId, planId, subscriptionData.id, new Date(), null, new Date());
-
-  const { data, error } = await supabase
-    .from('subscriptions')
-    .insert([payment]);
-
-  if (error) throw error;
-  return data[0];
+const handleCreateSubscription = async (planId, subscriber, startTime, shippingAmount, shippingAddress) => {
+  try{
+  const rSaveSubscription = await createSubscription(subscriptionData);
+  logger.debug("Respuesta de saveSubscription:", rSaveSubscription)
+  return subscription;
+}catch(error){
+  logger.error("Error durante ejecución del handleCreateSubscription:", error);
+}
 };
 
 export {
-  createPayPalSubscription
+  createProductAndPlan,
+  handleCreateSubscription
 };

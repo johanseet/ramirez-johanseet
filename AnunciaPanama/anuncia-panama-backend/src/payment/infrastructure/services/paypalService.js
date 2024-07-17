@@ -1,113 +1,151 @@
 import axios from 'axios';
-import { v4 as uuidv4 } from 'uuid';
-import { createSubscriptionInDB, updateSubscriptionStatusInDB } from '../models/subscriptionModel.js';
+import logger from '../../../config/logger.js';
 
-let cachedAccessToken = null;
-let tokenExpirationTime = null;
-
-const getAccessToken = async () => {
-  if (cachedAccessToken && new Date() < tokenExpirationTime) {
-    return cachedAccessToken;
-  }
-
-  const auth = Buffer.from(`${process.env.PAYPAL_CLIENT_ID}:${process.env.PAYPAL_CLIENT_SECRET}`).toString('base64');
-  const response = await axios.post('https://api-m.sandbox.paypal.com/v1/oauth2/token', 'grant_type=client_credentials', {
-    headers: {
-      Authorization: `Basic ${auth}`,
-      'Content-Type': 'application/x-www-form-urlencoded'
-    }
-  });
-
-  cachedAccessToken = response.data.access_token;
-  tokenExpirationTime = new Date(new Date().getTime() + response.data.expires_in * 1000 - 60000); // Renovar el token un minuto antes de que expire
-  return cachedAccessToken;
-};
-
-const createPayPalSubscription = async (plan, userId) => {
+const getToken = async () => {
   try {
-    const accessToken = await getAccessToken();
-    const subscriptionId = uuidv4();
-  
-    const subscriptionData = {
-      plan_id: plan,
-      subscriber: {
-        name: {
-          given_name: "Customer",
-          surname: "Business"
-        },
-        email_address: "customer@example.com"
+    const response = await axios.post(`${process.env.PAYPAL_API_URL}/v1/oauth2/token`, 'grant_type=client_credentials', {
+      auth: {
+        username: process.env.PAYPAL_CLIENT_ID,
+        password: process.env.PAYPAL_CLIENT_SECRET
       },
-      application_context: {
-        brand_name: "YourApp",
-        locale: "en-US",
-        shipping_preference: "SET_PROVIDED_ADDRESS",
-        user_action: "SUBSCRIBE_NOW",
-        payment_method: {
-          payer_selected: "PAYPAL",
-          payee_preferred: "IMMEDIATE_PAYMENT_REQUIRED"
-        },
-        return_url: "https://yourapp.com/subscription-success",
-        cancel_url: "https://yourapp.com/subscription-cancel"
-      }
-    };
-
-    const response = await axios.post('https://api-m.sandbox.paypal.com/v1/billing/subscriptions', subscriptionData, {
       headers: {
-        Authorization: `Bearer ${accessToken}`,
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/x-www-form-urlencoded'
       }
     });
+    console.log('Token response:', response.data);
+    return response.data.access_token;
+  } catch (error) {
+    console.error('Error getting token:', error.response ? error.response.data : error.message);
+    throw error;
+  }
+};
 
-    await createSubscriptionInDB(subscriptionId, userId, plan);
+const createProduct = async (name, description) => {
+  try {
+    const token = await getToken();
+    const response = await axios.post(`${process.env.PAYPAL_API_URL}/v1/catalogs/products`, {
+      name,
+      description,
+      type: 'SERVICE',
+      category: 'SOFTWARE'
+    }, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    console.log('Create product response:', response.data);
+    return response.data.id;
+  } catch (error) {
+    console.error('Error creating product:', error.response ? error.response.data : error.message);
+    throw error;
+  }
+};
 
+const createPlan = async (productId, planName, price) => {
+  try {
+    const token = await getToken();
+    const response = await axios.post(`${process.env.PAYPAL_API_URL}/v1/billing/plans`, {
+      product_id: productId,
+      name: planName,
+      billing_cycles: [
+        {
+          frequency: {
+            interval_unit: 'MONTH',
+            interval_count: 1
+          },
+          tenure_type: 'REGULAR',
+          sequence: 1,
+          total_cycles: 0,
+          pricing_scheme: {
+            fixed_price: {
+              value: price,
+              currency_code: 'USD'
+            }
+          }
+        }
+      ],
+      payment_preferences: {
+        auto_bill_outstanding: true,
+        setup_fee: {
+          value: '0',
+          currency_code: 'USD'
+        },
+        setup_fee_failure_action: 'CANCEL',
+        payment_failure_threshold: 3
+      }
+    }, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    console.log('Create plan response:', response.data);
+    return response.data.id;
+  } catch (error) {
+    console.error('Error creating plan:', error.response ? error.response.data : error.message);
+    throw error;
+  }
+};
+
+const createSubscription = async (planId, subscriber, startTime, shippingAmount, shippingAddress) => {
+  try {
+    logger.debug("planId: ", planId)
+    const token = await getToken();
+    const request = {
+      plan_id: planId,
+      start_time: startTime,
+      shipping_amount: {
+        currency_code: shippingAmount.currency_code,
+        value: shippingAmount.value
+      },
+      subscriber: {
+        name: {
+          given_name: subscriber.given_name,
+          surname: subscriber.surname
+        },
+        email_address: subscriber.email_address,
+        shipping_address: {
+          name: {
+            full_name: shippingAddress.name.full_name
+          },
+          address: {
+            address_line_1: shippingAddress.address.address_line_1,
+            address_line_2: shippingAddress.address.address_line_2,
+            admin_area_2: shippingAddress.address.admin_area_2,
+            admin_area_1: shippingAddress.address.admin_area_1,
+            postal_code: shippingAddress.address.postal_code,
+            country_code: shippingAddress.address.country_code
+          }
+        }
+      },
+      application_context: {
+        brand_name: 'Anuncia Panama',
+        locale: 'en-US',
+        shipping_preference: 'SET_PROVIDED_ADDRESS',
+        user_action: 'SUBSCRIBE_NOW',
+        payment_method: {
+          payer_selected: 'PAYPAL',
+          payee_preferred: 'IMMEDIATE_PAYMENT_REQUIRED'
+        },
+        return_url: 'https://example.com/return',
+        cancel_url: 'https://example.com/cancel'
+      }
+    }
+    logger.debug("Request /v1/billing/subscriptions: ", request)
+    const headers = {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    }
+    const response = await axios.post(`${process.env.PAYPAL_API_URL}/v1/billing/subscriptions`, request, headers);
     return response.data;
   } catch (error) {
-    console.error('Error creating PayPal subscription:', error.response ? error.response.data : error.message);
-    throw new Error('Failed to create PayPal subscription');
+    logger.error("Error durante ejecución del createSubscription:", error);
+    throw error;
   }
-};
-
-const verifyPayPalWebhook = (req) => {
-  const transmissionId = req.headers['paypal-transmission-id'];
-  const timestamp = req.headers['paypal-transmission-time'];
-  const webhookId = process.env.PAYPAL_WEBHOOK_ID;
-  const transmissionSig = req.headers['paypal-transmission-sig'];
-  const certUrl = req.headers['paypal-cert-url'];
-  const authAlgo = req.headers['paypal-auth-algo'];
-  const webhookEvent = req.body;
-
-  const expectedSignature = crypto.createHmac('sha256', process.env.PAYPAL_WEBHOOK_SECRET)
-    .update(transmissionId + "|" + timestamp + "|" + webhookId + "|" + JSON.stringify(webhookEvent))
-    .digest('base64');
-
-  return transmissionSig === expectedSignature;
-};
-
-const handlePayPalWebhook = async (req, res) => {
-  if (!verifyPayPalWebhook(req)) {
-    return res.status(400).send('Invalid signature');
-  }
-
-  const eventType = req.body.event_type;
-  const subscriptionId = req.body.resource.id;
-
-  if (eventType === 'BILLING.SUBSCRIPTION.ACTIVATED') {
-    await updateSubscriptionStatusInDB(subscriptionId, 'active');
-  } else if (eventType === 'BILLING.SUBSCRIPTION.CANCELLED') {
-    await updateSubscriptionStatusInDB(subscriptionId, 'cancelled');
-  } else if (eventType === 'BILLING.SUBSCRIPTION.EXPIRED') {
-    await updateSubscriptionStatusInDB(subscriptionId, 'expired');
-  }
-
-  res.status(200).send('Webhook handled');
-};
-
-const handlePayPalSuccess = async (token, plan, businessData, user) => {
-  // Aquí puedes procesar el token, plan y demás datos necesarios.
 };
 
 export {
-  createPayPalSubscription,
-  handlePayPalWebhook,
-  handlePayPalSuccess
+  createProduct,
+  createPlan,
+  createSubscription
 };

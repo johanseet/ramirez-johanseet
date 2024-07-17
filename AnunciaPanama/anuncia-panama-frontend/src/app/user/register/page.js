@@ -36,7 +36,7 @@ const Register = () => {
     }
     try {
       await register(formData);
-      router.push('/'); // Redirigir a la página principal después del registro
+      router.push('/');
     } catch (err) {
       setError(err.message);
     }

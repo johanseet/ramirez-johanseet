@@ -19,6 +19,15 @@ export const getBusinessTypes = async () => {
   }
 };
 
+export const registerSubscriptionService = async (subscriptionData) => {
+  try {
+    const response = await axiosInstance.post('/business/register/subscription', subscriptionData);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const getBusinesses = async () => {
   try {
     const response = await axiosInstance.get('/businesses');

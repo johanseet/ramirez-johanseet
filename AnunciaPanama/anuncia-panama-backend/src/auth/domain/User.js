@@ -19,12 +19,10 @@ class User {
   }
 
   changePassword(newPassword) {
-    // Aquí podríamos agregar lógica para validar la complejidad del password
     this.password = newPassword;
   }
 
   updateEmail(newEmail) {
-    // Aquí podríamos agregar lógica para validar el formato del email
     this.email = newEmail;
   }
 }

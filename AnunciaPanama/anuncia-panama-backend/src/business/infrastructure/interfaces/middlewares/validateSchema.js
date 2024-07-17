@@ -17,7 +17,24 @@ const registerBusinessSchema = Joi.object({
   socialNetworksUrl: Joi.object().optional()
 });
 
-const validateSchema = (req, res, next) => {
+const registerSubscriptionSchema = Joi.object({
+  businessId: Joi.string().required(),
+  planId: Joi.string().required(),
+  paypalSubscriptionId: Joi.string().required(),
+  status: Joi.string().required(),
+  statusUpdateTime: Joi.date().required(),
+  startTime: Joi.date().required(),
+  payerId: Joi.string().required(),
+  createdAt: Joi.date().required(),
+  cycleSequence: Joi.number().integer().required(),
+  grossAmount: Joi.number().precision(2).required(),
+  totalItemAmount: Joi.number().precision(2).required(),
+  shippingAmount: Joi.number().precision(2).required(),
+  taxAmount: Joi.number().precision(2).required(),
+  paymentTime: Joi.date().required()
+});
+
+const validateBusinessSchema = (req, res, next) => {
   const { error } = registerBusinessSchema.validate(req.body);
   if (error) {
     return res.status(400).json({ error: error.details[0].message });
@@ -25,4 +42,15 @@ const validateSchema = (req, res, next) => {
   next();
 };
 
-export default validateSchema;
+const validateSubscriptionSchema = (req, res, next) => {
+  const { error } = registerSubscriptionSchema.validate(req.body);
+  if (error) {
+    return res.status(400).json({ error: error.details[0].message });
+  }
+  next();
+};
+
+export {
+  validateBusinessSchema,
+  validateSubscriptionSchema
+};

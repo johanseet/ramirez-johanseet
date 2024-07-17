@@ -1,6 +1,6 @@
 import session from 'express-session';
 import SupabaseSessionStore from '../utils/supabase-session-store.js';
-import { supabaseUrl, supabaseKey } from './supabase.js';
+import { supabaseUrl, supabaseKey } from './supabaseConfig.js';
 
 const sessionConfig = session({
   store: new SupabaseSessionStore(supabaseUrl, supabaseKey),

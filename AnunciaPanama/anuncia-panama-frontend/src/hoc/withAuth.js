@@ -15,7 +15,7 @@ const withAuth = (WrappedComponent) => {
     }, [loading, user, router]);
 
     if (loading || !user) {
-      return <div>Loading...</div>; // Puedes poner un spinner aquí
+      return <div>Loading...</div>;
     }
 
     return <WrappedComponent {...props} />;

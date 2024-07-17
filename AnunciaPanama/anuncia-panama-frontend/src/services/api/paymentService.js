@@ -1,29 +1,33 @@
-// src/services/api/paymentService.js
 import axiosInstance from '../axiosConfig';
 
-export const createPayment = async (paymentData) => {
+// Crear un producto y un plan
+export const createProductAndPlan = async (name, description, planName, price) => {
   try {
-    const response = await axiosInstance.post('/payments', paymentData);
+    const response = await axiosInstance.post('/payment/create-product-plan', {
+      name,
+      description,
+      planName,
+      price,
+    });
     return response.data;
   } catch (error) {
-    throw error;
+    throw new Error(`Error creando el producto y el plan: ${error.response ? error.response.data.error : error.message}`);
   }
 };
 
-export const getPaymentById = async (id) => {
+// Crear una suscripción
+export const createSubscription = async (planId, subscriber, shippingAmount, shippingAddress) => {
   try {
-    const response = await axiosInstance.get(`/payments/${id}`);
+    const startTime = new Date().toISOString();
+    const response = await axiosInstance.post('/payment/create-subscription', {
+      planId,
+      subscriber,
+      startTime,
+      shippingAmount,
+      shippingAddress,
+    });
     return response.data;
   } catch (error) {
-    throw error;
-  }
-};
-
-export const getPayments = async () => {
-  try {
-    const response = await axiosInstance.get('/payments');
-    return response.data;
-  } catch (error) {
-    throw error;
+    throw new Error(`Error creando subscription: ${error.response ? error.response.data.error : error.message}`);
   }
 };

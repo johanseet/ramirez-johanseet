@@ -1,13 +1,11 @@
-import supabase from '../../../config/supabase.js';
+import supabase from '../../../config/supabaseConfig.js';
 import TransactionDTO from '../dto/TransactionDTO.js';
 import logger from '../../../config/logger.js';
 
 const registerBusinessTransaction = async (user, client, business) => {
   const transactionDetails = new TransactionDTO(user, client, business);
-  logger.info("transactionDetails", transactionDetails);
 
   try {
-    console.log("transactionDetails", transactionDetails)
     const { data, error } = await supabase.rpc('register_business_transaction', {
       user_email: transactionDetails.user_email,
       user_password: transactionDetails.user_password,

@@ -6,6 +6,7 @@ export const getPlans = async () => {
     const response = await axiosInstance.get('/plans');
     return response.data;
   } catch (error) {
+    console.log("RESPONSE",response);
     throw error;
   }
 };

@@ -1,33 +1,39 @@
-import supabase from '../../../config/supabase.js';
+import { createClient } from '@supabase/supabase-js';
+import logger from '../../../config/logger.js';
 
-const createSubscriptionInDB = async (subscriptionId, userId, planId) => {
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
+
+const saveSubscription = async (subscription) => {
+  try{
   const { data, error } = await supabase
     .from('subscriptions')
-    .insert([
-      {
-        id: subscriptionId,
-        business_id: userId,
-        plan_id: planId,
-        start_date: new Date(),
-        created_at: new Date()
-      }
-    ]);
+    .insert([subscription]);
 
-  if (error) throw new Error(error.message);
-  return data[0];
+  if (error) {
+    logger.error("subscriptions insert error:", error);
+    throw new Error(error.message);
+  }
+  logger.debug("subscription insert:", data)
+  return data;
+}catch(error){
+  logger.error("Error durante ejecución del saveSubscription:", error);
+}
 };
 
-const updateSubscriptionStatusInDB = async (subscriptionId, status) => {
+const getSubscriptionById = async (subscriptionId) => {
   const { data, error } = await supabase
     .from('subscriptions')
-    .update({ status })
-    .eq('id', subscriptionId);
+    .select('*')
+    .eq('paypal_subscription_id', subscriptionId)
+    .single();
 
-  if (error) throw new Error(error.message);
-  return data[0];
+  if (error) {
+    throw new Error(error.message);
+  }
+  return data;
 };
 
 export {
-  createSubscriptionInDB,
-  updateSubscriptionStatusInDB
+  saveSubscription,
+  getSubscriptionById
 };

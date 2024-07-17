@@ -2,14 +2,14 @@
   "name": "anuncia-panama-backend",
   "version": "1.0.0",
   "description": "Backend for Anuncia Panama",
-  "main": "server.js",
+  "main": "src/server.js",
   "type": "module",
   "scripts": {
     "start": "bun run server.js",
     "dev": "bun run src/server.js --watch"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.0.0",
+    "@supabase/supabase-js": "^2.44.4",
     "axios": "^1.7.2",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.1",

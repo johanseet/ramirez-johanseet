@@ -9,7 +9,6 @@ class Business {
     this.contactPhone = contactPhone;
     this.websiteUrl = websiteUrl;
     this.socialNetworksUrl = socialNetworksUrl;
-    console.log("socialNetworksUrl",socialNetworksUrl)
 
     this.validateEmail(contactEmail);
     this.validatePhone(contactPhone);

@@ -3,11 +3,13 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { getPlans } from '@api/planService';
 import OnboardingLayout from '../layout';
+import { useOnboarding } from '@contexts/onboardingContext';
 
 const SelectPlan = () => {
   const router = useRouter();
   const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { setSelectedPlan } = useOnboarding();
 
   const fetchPlans = useCallback(async () => {
     try {
@@ -25,9 +27,9 @@ const SelectPlan = () => {
     fetchPlans();
   }, [fetchPlans]);
 
-  const handleSelectPlan = (planId) => {
-    localStorage.setItem('selectedPlanId', planId);
-    router.push('/business/onboarding/business-info');
+  const handleSelectPlan = (plan) => {
+    setSelectedPlan(plan);
+    router.push('/business/onboarding/payment');
   };
 
   return (
@@ -61,7 +63,7 @@ const SelectPlan = () => {
                     <div className="mt-6">
                       <button
                         className="w-full py-2 px-4 text-sm font-medium rounded-md text-white bg-primary hover:bg-primary-light"
-                        onClick={() => handleSelectPlan(plan.id)}
+                        onClick={() => handleSelectPlan(plan)}
                       >
                         Seleccionar plan
                       </button>
@@ -85,7 +87,7 @@ const SelectPlan = () => {
                           </li>
                         ))
                       ) : (
-                        <li>No features available</li>
+                        <li>Caracteristicas no disponibles</li>
                       )}
                     </ul>
                   </div>

@@ -1,5 +1,5 @@
 import session from 'express-session';
-import supabase from '../config/supabase.js';
+import supabase from '../config/supabaseConfig.js';
 
 class SupabaseSessionStore extends session.Store {
   constructor() {
